@@ -286,7 +286,7 @@ window.firebaseReady = (async()=>{
 const KEY='sse_reporting_v1';'sse_reporting_v1';
 const state=JSON.parse(localStorage.getItem(KEY)||'null')||{user:null,reports:[],requests:[],attendance:[],members:[{name:'Team Member 1',assignedSites:[]},{name:'Team Member 2',assignedSites:[]}],sites:[],settings:{}};
 state.settings=state.settings||{};
-state.settings.version='V55 ATTENDANCE STATUS FIX';
+state.settings.version='V56 ASSIGNMENT + ATTENDANCE FIX';
 state.notifications=Array.isArray(state.notifications)?state.notifications:[];
 state.notificationReceipts=Array.isArray(state.notificationReceipts)?state.notificationReceipts:[];
 state.settings.pushVapidKey=state.settings.pushVapidKey||'';
@@ -638,9 +638,9 @@ function shell(content){
       : `<button onclick="page('report')">📝<br>Report</button><button onclick="page('attendance')">🕘<br>Attend</button><button onclick="page('material')">📦<br>Material</button><button onclick="page('workPermit')">📋<br>Permit</button>`}
   </div>`:'';
   document.getElementById('app').innerHTML=`<div class="app">
-  <header class="top"><img src="${state.settings.appLogo||'icons/sse-logo-192.png'}"><div><h1>${uiLabel('appName','SSE Reporting App')}</h1><small>Silver Star Enterprises • <span class="version-pill" title="Current upgraded app version">V55 ATTENDANCE STATUS FIX • WORKING</span></small></div>
+  <header class="top"><img src="${state.settings.appLogo||'icons/sse-logo-192.png'}"><div><h1>${uiLabel('appName','SSE Reporting App')}</h1><small>Silver Star Enterprises • <span class="version-pill" title="Current upgraded app version">V56 ASSIGNMENT + ATTENDANCE FIX</span></small></div>
   <div style="margin-left:auto;display:flex;align-items:center">${u?`<span class="user-chip"><span class="user-dot"></span>${esc(u.name)} · ${role}</span><button class="btn" onclick="logout()">Logout</button>`:''}</div></header>
-  ${content}<div class="card upgrade-note" role="status"><b>🆕 App Updated: V55 ATTENDANCE STATUS FIX • WORKING</b><div>फॉर्म में ऑप्शन चुनते समय स्क्रीन पीछे जाने/रीसेट होने की समस्या रोकने के लिए टच और लॉन्ग-प्रेस हैंडलिंग सुधारी गई है। कई विकल्प चुनकर फिर आगे बढ़ सकते हैं।</div><small>Update History: V53 — अलग Assign menu और site-wise Work Report assignment; V52 — Site assignment और Work Report access; V51 — फॉर्म/चेकबॉक्स के ऊपर गलती से खुलने वाला long-press editor बंद; V49 — auto-back fix; V48 — Cloud Queue और notification status tracking. ऐप बंद होने पर Push के लिए Firebase VAPID key और Cloud Function सेटअप आवश्यक है।</small></div><div class="footer">SSE Reporting App • V55 ATTENDANCE STATUS FIX • WORKING • Firebase cloud sync enabled</div>${bottom}<div id="v20Toast" class="v20-toast"></div></div>`;
+  ${content}<div class="card upgrade-note" role="status"><b>🆕 App Updated: V56 ASSIGNMENT + ATTENDANCE FIX</b><div>फॉर्म में ऑप्शन चुनते समय स्क्रीन पीछे जाने/रीसेट होने की समस्या रोकने के लिए टच और लॉन्ग-प्रेस हैंडलिंग सुधारी गई है। कई विकल्प चुनकर फिर आगे बढ़ सकते हैं।</div><small>Update History: V53 — अलग Assign menu और site-wise Work Report assignment; V52 — Site assignment और Work Report access; V51 — फॉर्म/चेकबॉक्स के ऊपर गलती से खुलने वाला long-press editor बंद; V49 — auto-back fix; V48 — Cloud Queue और notification status tracking. ऐप बंद होने पर Push के लिए Firebase VAPID key और Cloud Function सेटअप आवश्यक है।</small></div><div class="footer">SSE Reporting App • V56 ASSIGNMENT + ATTENDANCE FIX • Firebase cloud sync enabled</div>${bottom}<div id="v20Toast" class="v20-toast"></div></div>`;
 }
 function login(){
  shell(`<main class="wrap"><div class="card login"><img class="logo" src="${state.settings.appLogo||'icons/sse-logo-512.png'}"><h2 style="text-align:center">${uiLabel('appName','SSE Reporting App')}</h2><p class="muted" style="text-align:center">Construction Site Daily Reporting • Online Trial</p>
@@ -1472,19 +1472,28 @@ function memberSites(name){const m=state.members.find(x=>x.name===name);return m
 function toggleMemberSite(name,siteId){const m=state.members.find(x=>x.name===name);if(!m)return;const had=(m.assignedSites||[]).includes(siteId);startProcessing(had?'Removing site access…':'Assigning site access…','Saving team access');m.assignedSites=m.assignedSites||[];m.assignedSites=had?m.assignedSites.filter(id=>id!==siteId):[...m.assignedSites,siteId];save();managerTeam();finishProcessing(true)}
 function memberAssignedSiteIds(member){
  const ids=new Set(Array.isArray(member?.assignedSites)?member.assignedSites:[]);
- const mid=member?.id;
+ const mid=String(member?.id||'');
  if(mid){
   Object.entries(state.settings?.assignments||{}).forEach(([siteId,systems])=>{
    const a=systems?.report;
-   if(a?.enabled && Array.isArray(a.memberIds) && a.memberIds.includes(mid)) ids.add(siteId);
+   if(a?.enabled && Array.isArray(a.memberIds) && a.memberIds.map(String).includes(mid)) ids.add(siteId);
   });
  }
- return [...ids];
+ return [...ids].map(String);
 }
 function assignedSiteOptions(selected=''){
- const m=currentTeamMember(); const ids=memberAssignedSiteIds(m);
- const mId=m?.id||''; const sites=(state.sites||[]).filter(s=>ids.includes(s.id) && siteVisibleForMember(mId,s.id));
- return `<option value="">Select Assigned Site</option>`+sites.map(s=>`<option value="${esc(s.id)}" ${s.id===selected?'selected':''}>${esc(s.name)}</option>`).join('');
+ const m=currentTeamMember();
+ const ids=memberAssignedSiteIds(m);
+ const mId=String(m?.id||'');
+ // Do not hide an explicitly assigned Daily Work Report site just because an old
+ // per-member visibility flag is false; assignment itself grants report access.
+ const reportAssignedIds=new Set();
+ if(mId) Object.entries(state.settings?.assignments||{}).forEach(([siteId,systems])=>{
+   const a=systems?.report;
+   if(a?.enabled && Array.isArray(a.memberIds) && a.memberIds.map(String).includes(mId)) reportAssignedIds.add(String(siteId));
+ });
+ const sites=(state.sites||[]).filter(s=>ids.includes(String(s.id)) && (reportAssignedIds.has(String(s.id)) || siteVisibleForMember(mId,s.id)));
+ return `<option value="">Select Assigned Site</option>`+sites.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===String(selected)?'selected':''}>${esc(s.name)}</option>`).join('');
 }
 function teamPage(p){
 if(p==='report') return reportForm();
