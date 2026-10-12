@@ -240,9 +240,14 @@ input[type=file]{padding:10px;background:#fbfcfe}
 .version-pill{display:inline-block;background:#e6f4ea;color:#176b37;border:1px solid #9bd3ad;border-radius:999px;padding:3px 8px;font-weight:800;font-size:11px;letter-spacing:.3px}
 .upgrade-note{border:1px solid #9bd3ad;background:#f2fbf5;color:#174c2b;margin:12px auto;max-width:1100px;line-height:1.5}
 .upgrade-note small{display:block;margin-top:5px;color:#38634a}
+
+/* PERMIT-ONLY RESET: keep authentication and shared Firebase infrastructure; expose only Work Permit features. */
+body.permit-only-reset .nav .custom-add-btn{display:none!important}
+body.permit-only-reset .module-dashboard-card:not(.permit){display:none!important}
+body.permit-only-reset [onclick*="page('attendance')"],body.permit-only-reset [onclick*="page('report')"],body.permit-only-reset [onclick*="page('material')"],body.permit-only-reset [onclick*="page('tbt')"],body.permit-only-reset [onclick*="page('assign')"],body.permit-only-reset [onclick*="page('team')"],body.permit-only-reset [onclick*="page('reports')"],body.permit-only-reset [onclick*="page('requests')"],body.permit-only-reset [onclick*="page('dailyHistory')"],body.permit-only-reset [onclick*="page('visibility')"]{display:none!important}
 </style>
 </head>
-<body>
+<body class="permit-only-reset">
 <div id="app"></div>
 <script>
 // ===== V37 FIREBASE ONLINE TRIAL =====
@@ -768,8 +773,8 @@ function deleteCustomMenu(index){if(!confirm('इस custom menu को हट�
 function customMenuPage(id){const m=customMenus().find(x=>x.id===id);if(!m)return customMenuEditor();shell(`<main class="wrap">${nav(id)}<div class="dash-hero"><div><h2>${esc(m.icon||'📁')} ${esc(m.title)}</h2><p>${esc(m.subtitle||'Custom system menu')}</p></div></div><div class="section-card"><div class="section-head"><h2>📂 ${esc(m.title)} Systems</h2><span class="badge">${(m.items||[]).length} Items</span></div><div class="custom-system-grid">${(m.items||[]).map((x,xi)=>`<button class="custom-system-card" data-custom-menu-id="${esc(m.id)}" data-custom-item-index="${xi}" onclick="toast('System selected')"><span>▣</span><b>${esc(x)}</b><small>Open system</small></button>`).join('')||'<div class="empty">इस menu में अभी कोई system नहीं है।</div>'}</div></div></main>`)}
 function nav(active){
 const custom=customMenus();
-const managerNav=[['dashboard','Dashboard'],['assign','📍 Assign'],['notifications','🔔 Notifications'],['requests','Requests'],['reports','Reports'],['permitCheck','📋 Permit Check'],['dailyHistory','📅 Daily History'],['team','Team'],...custom.map(m=>[m.id,`${m.icon||'📁'} ${m.title}`]),['visibility','👥 Team Admin']];
-const allMemberNav=[['dashboard','My Dashboard','dashboard'],['notifications','🔔 Notifications','notifications'],['report',uiLabel('dailyReport','Daily Report'),'report'],['attendance',uiLabel('attendance','Attendance'),'attendance'],['material',uiLabel('material','Material Request'),'material'],['tbt','📸 '+uiLabel('tbt','TBT Photo'),'tbt'],['workPermit','📋 '+uiLabel('workPermit','Work Permit'),'workPermit']];
+const managerNav=[['workPermit','📋 Work Permit'],['permitCheck','📋 Permit Check']];
+const allMemberNav=[['workPermit','📋 '+uiLabel('workPermit','Work Permit'),'workPermit']];
 const memberNav=allMemberNav.filter(x=>x[2]==='dashboard'||x[2]==='report'||moduleVisibleForCurrentUser(x[2])).map(x=>[x[0],x[1]]);
 const items=state.user.role==='manager'?managerNav:memberNav;
 return `<div class="nav nav-scroll">${items.map(([k,t])=>`<button class="btn ${active===k?'primary':''}" data-v28-route="${esc(k)}" data-v28-label="${esc(t.replace(/^[^\w\u00C0-\uFFFF]+/,'').trim())}" onclick="page('${k}')">${t}</button>`).join('')}${state.user.role==='manager'?`<button class="btn custom-add-btn" onclick="page('customMenuEditor')">＋ Add</button>`:''}</div>`;
