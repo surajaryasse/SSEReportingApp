@@ -1540,19 +1540,50 @@ function buildAttendanceStampedPhoto(){
 }
 async function submitAttendance(status){
  const site='Attendance';
- if(!window._attendanceGPS)return alert('Please capture location first.');
- if(!window._attendanceStampedPhoto)return alert('Please take a selfie and capture location first.');
+ if(!window._attendanceGPS){toast('❌ FAILED — पहले Get Location दबाएँ।');return alert('Please capture location first.');}
+ if(!window._attendanceStampedPhoto){toast('❌ FAILED — selfie और location दोनों ज़रूरी हैं।');return alert('Please take a selfie and capture location first.');}
+ const btn=[...document.querySelectorAll('button')].find(b=>(b.textContent||'').includes('Submit Attendance'));
+ if(btn){btn.disabled=true;btn.textContent='⏳ SAVING ATTENDANCE…';}
  const existingIndex=state.attendance.findIndex(x=>x.name===state.user.name&&x.date===today());
- const record={name:state.user.name,date:today(),siteName:site,status,photo:window._attendanceStampedPhoto,location:window._attendanceGPS};
- if(existingIndex>=0) state.attendance[existingIndex]=record;
- else state.attendance.push(record);
- const unique=new Map();
- state.attendance.forEach(a=>unique.set((a.name||'')+'|'+(a.date||''),a));
- state.attendance=[...unique.values()];
- save();
- if(state.user?.role!=='manager') await cloudRestAppendArray('attendance',record);
- queueEvent({type:'attendance',title:'Attendance जमा हुई',body:state.user.name+' · '+status,siteName:site,toRole:'manager'});
- toast('Attendance submitted successfully');attendanceForm();
+ const record={id:'attendance_'+state.user.name+'_'+today(),name:state.user.name,date:today(),siteName:site,status,photo:window._attendanceStampedPhoto,location:window._attendanceGPS};
+ const previous=existingIndex>=0?state.attendance[existingIndex]:null;
+ try{
+   if(existingIndex>=0) state.attendance[existingIndex]=record;
+   else state.attendance.push(record);
+   const unique=new Map();
+   state.attendance.forEach(a=>unique.set((a.name||'')+'|'+(a.date||''),a));
+   state.attendance=[...unique.values()];
+   save();
+   let cloudOk=false;
+   if(state.user?.role==='manager'){
+     const token=state.authSession?.idToken;
+     if(!token) throw new Error('Firebase session नहीं मिला। दोबारा login करें।');
+     let payload=cloudPayload();
+     const remote=await cloudRestGet();
+     if(remote) payload=mergeIncomingSubmissions(payload,remote);
+     payload.attendance=mergeRecordArrays([record],remote?.attendance||[]);
+     payload.user=null;delete payload.authSession;
+     const body={fields:{}};Object.entries(payload).forEach(([k,v])=>body.fields[k]=firestoreValue(v));
+     const r=await fetch(FIRESTORE_DOC_URL,{method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+     if(!r.ok) throw new Error('Firebase save failed (HTTP '+r.status+').');
+     const verify=await cloudRestGet();
+     cloudOk=Array.isArray(verify?.attendance)&&verify.attendance.some(a=>a.name===record.name&&a.date===record.date);
+   }else{
+     cloudOk=await cloudRestAppendArray('attendance',record);
+   }
+   if(!cloudOk) throw new Error('Firebase ने attendance save confirm नहीं की। Login, internet और Firestore rules जाँचें।');
+   queueEvent({type:'attendance',title:'Attendance जमा हुई',body:state.user.name+' · '+status,siteName:site,toRole:'manager'});
+   toast('✅ DONE — Attendance Firebase पर save हो गई।');
+   attendanceForm();
+ }catch(err){
+   // Restore the local row so the UI does not falsely imply that cloud save succeeded.
+   if(previous){state.attendance=state.attendance.map(a=>a.name===record.name&&a.date===record.date?previous:a);}
+   else state.attendance=state.attendance.filter(a=>!(a.name===record.name&&a.date===record.date));
+   localStorage.setItem(KEY,JSON.stringify(state));
+   if(btn){btn.disabled=false;btn.textContent='❌ FAILED — Retry Attendance';}
+   const msg='❌ FAILED — Attendance cloud में save नहीं हुई: '+(err?.message||'Network/login error');
+   toast(msg);alert(msg);
+ }
 }
 function materialForm(){shell(`<main class="wrap">${nav('material')}<div class="card"><h2>${uiLabel('material','Material Request')}</h2><label>${uiLabel('site','Site')}</label><select id="site" onchange="siteChangedForForm()">${assignedSiteOptions()}</select>
 <label>${uiLabel('tower','Tower')}</label><select id="tower"><option value="">Select Tower</option></select>
