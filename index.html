@@ -1,0 +1,1733 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1b31">
+<meta name="description" content="SSE Reporting App - Silver Star Enterprises">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/sse-logo-192.png">
+<title>SSE Reporting App — V61 Full System Reliability</title>
+<style>
+:root{--navy:#0b1b31;--blue:#1769aa;--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#697386;--line:#e5e9f0;--green:#198754;--red:#dc3545;--amber:#f59f00}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit} button{cursor:pointer;border:0}
+.app{min-height:100vh}.top{background:linear-gradient(135deg,#071426,#16365d);color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+.top img{width:48px;height:48px;border-radius:10px;object-fit:cover;background:#fff}.top h1{font-size:20px;margin:0}.top small{opacity:.75}
+.wrap{max-width:1100px;margin:auto;padding:18px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 4px 16px #0b1b310d}
+h2,h3{margin:0 0 12px}.muted{color:var(--muted)}.hidden{display:none!important}
+.btn{padding:11px 14px;border-radius:10px;background:#e9eef5;color:var(--text);font-weight:650}.primary{background:var(--blue);color:#fff}.success{background:var(--green);color:#fff}.danger{background:var(--red);color:#fff}.warn{background:var(--amber);color:#111}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.nav{display:flex;gap:8px;overflow:auto;padding:12px 0}.nav button{white-space:nowrap}
+label{display:block;font-weight:650;margin:10px 0 6px}input,select,textarea{width:100%;padding:11px;border:1px solid #d7dde7;border-radius:10px;background:#fff}textarea{min-height:100px;resize:vertical}
+.stat{font-size:28px;font-weight:800}.dash-hero{background:linear-gradient(135deg,#071426 0%,#123b69 55%,#1769aa 100%);color:#fff;border-radius:22px;padding:22px;margin:4px 0 18px;box-shadow:0 12px 30px #0b1b3122;display:flex;justify-content:space-between;align-items:center;gap:16px}.dash-hero h2{margin:0 0 5px;font-size:24px}.dash-hero p{margin:0;color:#dbe8f7}.dash-date{background:#ffffff18;border:1px solid #ffffff25;border-radius:14px;padding:10px 14px;text-align:right;font-size:13px;white-space:nowrap}.dash-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.dash-card{cursor:pointer;transition:transform .18s ease,box-shadow .18s ease;background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;box-shadow:0 7px 22px #0b1b3110;position:relative;overflow:hidden}.dash-card:after{content:'';position:absolute;right:-28px;top:-28px;width:90px;height:90px;border-radius:50%;background:#1769aa0b}.dash-card:hover{transform:translateY(-3px);box-shadow:0 13px 30px #0b1b3120}.dash-card .icon{width:44px;height:44px;display:grid;place-items:center;border-radius:13px;background:#eef5fc;font-size:22px;margin-bottom:12px}.dash-card .label{font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.5px}.dash-card .big{font-size:30px;font-weight:850;margin-top:3px}.dash-card .hint{font-size:12px;color:var(--muted);margin-top:3px}.team-total-sub{font-size:12px;font-weight:750;color:var(--blue);margin-top:-2px}.section-card{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 7px 22px #0b1b3110}.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.section-head h2{font-size:18px}.mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.mini-item{border:1px solid var(--line);border-radius:15px;padding:13px;background:#fbfcfe}.progress{height:9px;background:#edf1f6;border-radius:99px;overflow:hidden;margin-top:8px}.progress>span{display:block;height:100%;background:var(--blue);border-radius:99px}.team-row{display:grid;grid-template-columns:1.2fr .8fr 1.2fr .8fr;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:11px 0}.team-row:last-child{border-bottom:0}.empty{padding:18px;text-align:center;color:var(--muted)}@media(max-width:850px){.dash-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.team-row{grid-template-columns:1fr 1fr}.dash-hero{align-items:flex-start}.dash-date{display:none}}@media(max-width:520px){.dash-grid{grid-template-columns:1fr 1fr;gap:10px}.mini-grid{grid-template-columns:1fr}.team-row{grid-template-columns:1fr}.dash-card{padding:14px}.dash-card .big{font-size:25px}.dash-hero{padding:18px;border-radius:18px}.dash-hero h2{font-size:20px}}.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:750;background:#edf1f6}.pending{background:#fff3cd}.approved{background:#d1e7dd}.rejected{background:#f8d7da}
+.team-count-box{margin:4px 0 14px;padding:14px 16px;border:1px solid var(--line);border-radius:15px;background:#fbfcfe}.team-count-box .big{font-size:32px;font-weight:850;line-height:1.05;margin:2px 0}.team-name-list{gap:8px}.team-name-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 14px}.team-name-line{display:flex;align-items:center;gap:10px;min-width:0}.team-name-line b{font-size:16px;overflow-wrap:anywhere}.team-number{display:grid;place-items:center;min-width:30px;height:30px;border-radius:9px;background:#edf1f6;font-weight:800;font-size:13px}@media(max-width:520px){.team-name-item{padding:12px}.team-name-item .badge{white-space:nowrap}.team-total-card .hint{margin-top:5px}}.notice{padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:#f8fafc;margin:12px 0;font-size:13px;line-height:1.45}.visibility-table{display:grid;gap:7px;overflow-x:auto}.visibility-head,.visibility-row{display:grid;grid-template-columns:minmax(180px,1.5fr) repeat(4,minmax(90px,1fr));gap:7px;align-items:center;min-width:650px}.visibility-head{font-size:11px;font-weight:800;color:var(--muted);padding:4px 8px;text-transform:uppercase}.visibility-row{padding:9px 8px;border:1px solid var(--line);border-radius:12px}.member-cell{display:flex;align-items:center;gap:9px;min-width:0}.visibility-toggle{border:0;border-radius:9px;padding:9px 6px;font-weight:800;font-size:11px;cursor:pointer}.visibility-toggle.show{background:#e9f8ef;color:#16723b}.visibility-toggle.hide{background:#f5e9e9;color:#9b2525}@media(max-width:650px){.visibility-table{margin-right:-4px}.visibility-head,.visibility-row{grid-template-columns:minmax(150px,1.5fr) repeat(4,82px);min-width:560px}}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-grid label{display:grid;gap:6px;font-size:13px;font-weight:750}.form-grid .full{grid-column:1/-1}.form-grid input,.form-grid select,.form-grid textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;font:inherit}.form-grid textarea{resize:vertical}@media(max-width:600px){.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}}.list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:12px;padding:12px}.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.login{max-width:460px;margin:7vh auto}.logo{width:110px;height:110px;object-fit:cover;border-radius:20px;display:block;margin:0 auto 16px}
+.photo-preview{max-width:180px;border-radius:10px;margin-top:8px}.footer{padding:24px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.wrap{padding:12px}.top{padding:12px}.stat{font-size:24px}}
+
+.nav-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:5px;scrollbar-width:thin}
+.nav-scroll .btn{flex:0 0 auto;white-space:nowrap}
+.module-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.module-choice{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff;text-align:left;cursor:pointer}
+.module-choice .module-icon{font-size:28px}.module-choice b{display:block;margin-top:7px;font-size:15px}.module-choice span{font-size:12px;color:var(--muted)}
+.admin-visibility-title{margin-top:18px}
+@media(max-width:520px){.module-choice-grid{grid-template-columns:1fr 1fr}.module-choice{padding:13px}}
+
+.module-panel{border:2px solid #d8e5f4;background:linear-gradient(180deg,#fff,#f7fbff)}
+.module-dashboard-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.module-dashboard-card{border:1px solid var(--line);border-radius:15px;padding:14px;text-align:left;background:#fff;cursor:pointer;min-height:112px}
+.module-dashboard-card span{font-size:27px;display:block;margin-bottom:8px}
+.module-dashboard-card b{display:block;font-size:14px}
+.module-dashboard-card small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.module-dashboard-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px #0b1b3115}
+@media(max-width:720px){.module-dashboard-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:420px){.module-dashboard-card{padding:11px;min-height:100px}}
+
+.admin-module-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.admin-module-strip>div{border:1px solid var(--line);border-radius:12px;padding:11px;background:#fbfcfe;text-align:center}
+.admin-module-strip span{display:block;font-size:22px}.admin-module-strip b{font-size:11px}
+@media(max-width:600px){.admin-module-strip{grid-template-columns:repeat(2,1fr)}}
+.dashboard-modules-top{margin:14px 0 18px}
+.module-top-title{font-size:18px;font-weight:800;margin-bottom:10px}
+.dashboard-modules-top .module-choice-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.dashboard-modules-top .module-choice{border:1px solid #d9dee8;border-radius:14px;padding:13px;background:#fff;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.dashboard-modules-top .module-icon{font-size:24px}
+.dashboard-modules-top .module-choice span{font-size:12px;color:#667085}
+
+.permit-form-card{border:2px solid #d7e5f4;background:linear-gradient(180deg,#fff,#f8fbff)}
+.permit-record{background:linear-gradient(180deg,#fff,#fbfdff);box-shadow:0 5px 16px #0b1b3108}
+.nav-scroll{padding:10px 2px 8px}.nav-scroll .btn{border:1px solid #dce3ec;box-shadow:0 2px 6px #0b1b3108}.nav-scroll .btn.primary{border-color:transparent;box-shadow:0 4px 12px #1769aa22}
+@media(max-width:520px){.dashboard-modules-top .module-choice-grid{grid-template-columns:1fr 1fr}.module-top-title{font-size:16px}.section-card{padding:15px}}
+.required{color:#d11;font-weight:800}
+.permit-photo{max-width:180px;max-height:140px;border-radius:10px;margin-top:8px;display:block}
+@media(max-width:700px){.dashboard-modules-top .module-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.permit-type-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:6px}
+.permit-type-btn{border:1px solid var(--line);border-radius:11px;background:#fff;padding:11px;text-align:left;font-weight:700}
+.permit-type-btn.active{border:2px solid var(--blue);background:#eef6ff}.permit-check{touch-action:manipulation;display:flex!important;align-items:center;gap:10px;border:1px solid var(--line);border-radius:11px;background:#fff;padding:12px;cursor:pointer;font-weight:700}.permit-check input{width:20px;height:20px;accent-color:#155eef}.permit-check:has(input:checked){border:2px solid var(--blue);background:#eef6ff}
+.labour-list{display:grid;gap:8px;margin-top:8px}
+.labour-row{display:flex;gap:8px;align-items:center}
+.labour-row input{flex:1}
+.labour-no{min-width:28px;height:28px;border-radius:8px;background:#edf1f6;display:grid;place-items:center;font-weight:800}
+.tbt-photo-only{border:2px dashed #d7dde7;border-radius:14px;padding:16px;background:#fbfcfe}
+
+/* ===== V15 PROFESSIONAL UI ===== */
+:root{
+ --navy:#0b1f3a;--blue:#155eef;--blue2:#0b63ce;--bg:#f5f7fb;--card:#fff;
+ --text:#182230;--muted:#667085;--line:#e4e7ec;--green:#12b76a;--red:#f04438;
+ --amber:#f79009;--shadow:0 8px 24px rgba(16,24,40,.07);
+}
+body{background:var(--bg);color:var(--text);font-size:14px}
+.top{background:linear-gradient(135deg,#071a31 0%,#0d315b 55%,#155eef 100%);padding:14px 20px;box-shadow:0 3px 14px rgba(0,0,0,.14)}
+.top img{width:46px;height:46px;border:2px solid rgba(255,255,255,.28);box-shadow:0 3px 10px rgba(0,0,0,.18)}
+.top h1{font-size:19px;letter-spacing:.1px}
+.top small{font-size:11px;opacity:.8}
+.wrap{max-width:1180px;padding:20px}
+.nav{padding:12px 0 15px;gap:7px}
+.nav .btn{border:1px solid var(--line);background:#fff;color:#344054;box-shadow:0 1px 2px rgba(16,24,40,.04);font-size:13px;padding:9px 13px}
+.nav .btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn{border-radius:10px;border:1px solid var(--line);font-weight:700;transition:.15s ease}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,24,40,.09)}
+.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.success{background:var(--green);border-color:var(--green);color:#fff}
+.danger{background:#fff1f0;border-color:#ffd6d2;color:#b42318}
+.card,.section-card{border:1px solid var(--line);box-shadow:var(--shadow);border-radius:16px}
+.card{padding:19px}.section-card{padding:19px}
+h2{font-size:20px;letter-spacing:-.2px}h3{font-size:16px}
+.muted{color:var(--muted)}
+input,select,textarea{border:1px solid #d0d5dd;border-radius:9px;outline:none;transition:border .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{border-color:#84adff;box-shadow:0 0 0 3px rgba(21,94,239,.10)}
+label{font-size:13px;color:#344054}
+.dash-hero{border-radius:18px;padding:21px;box-shadow:0 12px 30px rgba(16,24,40,.12)}
+.dash-grid{gap:12px}
+.dash-card{border-radius:15px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.dash-card .icon{background:#eef4ff}
+.dash-card .big{font-size:28px}
+.dashboard-modules-top{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.module-top-title{font-size:15px;text-transform:uppercase;letter-spacing:.6px;color:#344054}
+.dashboard-modules-top .module-choice-grid{gap:9px}
+.dashboard-modules-top .module-choice,.module-choice{
+ border:1px solid #e4e7ec;border-radius:12px;background:#fff;
+ box-shadow:0 1px 2px rgba(16,24,40,.03);transition:.15s ease
+}
+.dashboard-modules-top .module-choice:hover,.module-choice:hover{border-color:#b2ccff;box-shadow:0 5px 16px rgba(16,24,40,.08);transform:translateY(-1px)}
+.module-choice .module-icon,.dashboard-modules-top .module-icon{font-size:22px}
+.form-grid{gap:14px}
+.form-grid label{font-size:13px}
+.permit-type-grid{gap:8px}
+.permit-type-btn{border:1px solid #d0d5dd;background:#fff;color:#344054;transition:.15s ease}
+.permit-type-btn:hover{border-color:#84adff;background:#f8fbff}
+.permit-type-btn.active{border:2px solid var(--blue);background:#eff6ff;color:#084298}
+.labour-row{background:#fafbfc;border-radius:10px;padding:4px}
+.labour-no{background:#e9eef5;color:#344054}
+.item{border:1px solid var(--line);border-radius:12px;background:#fff}
+.badge{border:1px solid #e4e7ec;background:#f8fafc;color:#475467}
+.approved{background:#ecfdf3;border-color:#abefc6;color:#067647}
+.pending{background:#fffaeb;border-color:#fedf89;color:#b54708}
+.rejected{background:#fef3f2;border-color:#fecdca;color:#b42318}
+.required{color:#d92d20}
+.notice{border-color:#d9e2f0;background:#f8fbff}
+.visibility-row{background:#fff;border-color:var(--line)}
+.footer{padding:26px;color:#98a2b3}
+.photo-preview,.permit-photo{border:1px solid var(--line);box-shadow:0 3px 12px rgba(16,24,40,.08)}
+.login{border-radius:20px;box-shadow:0 16px 40px rgba(16,24,40,.10)}
+.login .logo{box-shadow:0 8px 24px rgba(16,24,40,.10)}
+@media(max-width:600px){
+ .wrap{padding:12px}
+ .dashboard-modules-top{padding:13px}
+ .dash-hero{padding:17px}
+ .top{padding:12px 14px}
+}
+.access-grid{display:grid;gap:12px;margin-top:14px}
+.access-member-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff;box-shadow:0 3px 12px rgba(16,24,40,.04)}
+.access-list{display:grid;gap:8px;margin-top:12px}
+.access-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid #e4e7ec;border-radius:12px;padding:10px 11px;background:#fbfcfe}
+.access-row small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.access-toggle{min-width:118px;padding:9px 10px;border-radius:10px;font-weight:800;font-size:11px;border:1px solid;cursor:pointer}
+.access-toggle.on{background:#ecfdf3;border-color:#abefc6;color:#067647}
+.access-toggle.off{background:#fef3f2;border-color:#fecdca;color:#b42318}
+@media(max-width:520px){.access-row{align-items:flex-start;flex-direction:column}.access-toggle{width:100%}}
+.access-member-select{font-size:15px;font-weight:700;padding:13px 14px;border:2px solid #d0d5dd;background:#fff}
+.selected-member-banner{display:flex;align-items:center;gap:12px;margin-top:14px;padding:13px 14px;border:1px solid #cfe0f5;border-radius:13px;background:#f5f9ff}
+.selected-access-list{display:grid;gap:10px;margin-top:14px}
+.selected-access-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--line);border-radius:13px;background:#fff}
+.selected-access-row small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+@media(max-width:520px){.selected-access-row{flex-direction:column;align-items:stretch}.selected-access-row .access-toggle{width:100%}}
+
+/* ===== V20 POLISH LAYER ===== */
+:root{
+  --v20-surface:#ffffff;
+  --v20-soft:#f7f9fc;
+  --v20-blue:#155eef;
+  --v20-navy:#071a31;
+}
+html{scroll-behavior:smooth}
+body{letter-spacing:-.05px}
+.top{backdrop-filter:saturate(140%) blur(8px)}
+.top .user-chip{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;color:#fff;margin-right:7px}
+.top .user-dot{width:8px;height:8px;border-radius:50%;background:#32d583;box-shadow:0 0 0 3px rgba(50,213,131,.12)}
+.btn:active{transform:translateY(0) scale(.98)}
+.card,.section-card,.dash-card,.dashboard-modules-top{overflow:hidden}
+.dash-card{min-height:132px}
+.dash-card .label{display:flex;align-items:center;gap:5px}
+.dash-card .hint{line-height:1.35}
+.section-card .section-head h2{display:flex;align-items:center;gap:7px}
+.module-choice,.module-dashboard-card{position:relative;overflow:hidden}
+.module-choice:before,.module-dashboard-card:before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(21,94,239,.035),transparent 55%);pointer-events:none}
+.form-grid input,.form-grid select,.form-grid textarea{min-height:44px}
+textarea{line-height:1.45}
+input[type=file]{padding:10px;background:#fbfcfe}
+.photo-preview,.permit-photo{background:#f7f9fc}
+.notice{box-shadow:0 2px 8px rgba(16,24,40,.03)}
+.empty{border:1px dashed #d7dde7;border-radius:12px;background:#fbfcfe}
+.v20-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.v20-toolbar .title{font-weight:800;font-size:15px}
+.v20-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.v20-kpi{border:1px solid var(--line);border-radius:13px;padding:12px;background:var(--v20-soft)}
+.v20-kpi b{display:block;font-size:20px;margin-top:2px}
+.v20-kpi span{font-size:11px;color:var(--muted)}
+.v20-search{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.v20-search input{flex:1;min-width:0}
+.v20-search .btn{white-space:nowrap}
+.v20-toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,18px);opacity:0;z-index:9999;pointer-events:none;background:#101828;color:#fff;padding:11px 15px;border-radius:12px;box-shadow:0 12px 30px rgba(16,24,40,.22);font-size:13px;font-weight:700;transition:.22s ease;max-width:min(92vw,420px);text-align:center}
+.v20-toast.show{opacity:1;transform:translate(-50%,0)}
+.v20-bottom-nav{display:none}
+@media(max-width:600px){
+  .top{position:sticky;top:0}
+  .top .user-chip{display:none}
+  .top h1{font-size:16px}
+  .top small{font-size:10px}
+  .top img{width:40px;height:40px}
+  .dash-grid{grid-template-columns:1fr 1fr}
+  .dash-card{min-height:124px}
+  .v20-kpi-row{grid-template-columns:1fr 1fr 1fr}
+  .v20-kpi{padding:10px}
+  .v20-kpi b{font-size:17px}
+  .v20-bottom-nav{position:fixed;display:flex;left:10px;right:10px;bottom:10px;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border:1px solid #dfe4ec;border-radius:16px;box-shadow:0 12px 30px rgba(16,24,40,.16);padding:7px;gap:4px}
+  .v20-bottom-nav button{flex:1;background:transparent;border:0;border-radius:11px;padding:8px 4px;color:#667085;font-size:10px;font-weight:800}
+  .v20-bottom-nav button.active{background:#eef4ff;color:#155eef}
+  .footer{padding-bottom:90px}
+}
+@media(max-width:420px){
+  .dash-card .big{font-size:23px}
+  .dash-card .icon{width:38px;height:38px;font-size:19px}
+  .v20-search{align-items:stretch}
+  .v20-search .btn{padding:9px 10px}
+}
+
+.dashboard-editor-list{display:grid;gap:14px;margin-top:14px}.dashboard-edit-card{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fbfcfe}.dashboard-edit-preview{display:flex;align-items:center;gap:12px;margin-bottom:12px}.dashboard-edit-preview img,.module-thumb{width:58px;height:58px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}.dashboard-edit-icon{width:58px;height:58px;border-radius:12px;background:#eef4ff;display:grid;place-items:center;font-size:27px}.dashboard-edit-preview small{display:block;color:var(--muted);margin-top:3px}.check-row{display:flex;align-items:center;gap:8px;margin:10px 0}.brand-editor{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}.brand-logo-preview{display:block;width:72px;height:72px;object-fit:contain;margin-top:10px;border:1px solid var(--line);border-radius:12px;background:#fff}.module-thumb{width:42px;height:42px;display:block;margin-bottom:3px}@media(max-width:700px){.dashboard-edit-card{padding:12px}}
+
+.custom-add-btn{background:#ecfdf3!important;border-color:#86efac!important;color:#166534!important;font-weight:900!important}.custom-menu-edit-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px;border:1px solid var(--line);border-radius:13px;background:#fbfcfe;margin-top:9px}.custom-menu-preview{display:flex;align-items:center;gap:11px}.custom-menu-preview>span{font-size:25px}.custom-menu-preview small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.custom-system-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.custom-system-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:15px;text-align:left;cursor:pointer;box-shadow:0 3px 10px rgba(16,24,40,.04)}.custom-system-card:hover{border-color:#b2ccff;transform:translateY(-1px)}.custom-system-card span{font-size:22px;display:block;margin-bottom:7px}.custom-system-card b{display:block}.custom-system-card small{display:block;color:var(--muted);margin-top:3px}@media(max-width:650px){.custom-system-grid{grid-template-columns:1fr 1fr}.custom-menu-edit-row{align-items:flex-start;flex-direction:column}.custom-menu-edit-row .actions{width:100%}.custom-menu-edit-row .actions .btn{flex:1}}@media(max-width:420px){.custom-system-grid{grid-template-columns:1fr}}
+
+/* ===== V30 UNIVERSAL LONG-PRESS EDIT ===== */
+.longpress-editing{outline:3px solid #155eef!important;outline-offset:2px;box-shadow:0 0 0 6px rgba(21,94,239,.12)!important}
+.longpress-hint{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:10001;background:#101828;color:#fff;padding:10px 15px;border-radius:999px;font-size:12px;font-weight:800;box-shadow:0 10px 28px rgba(16,24,40,.25);pointer-events:none}
+.v28-edit-modal{position:fixed;inset:0;background:rgba(16,24,40,.48);z-index:10000;display:grid;place-items:center;padding:18px}
+.v28-edit-box{width:min(520px,96vw);background:#fff;border-radius:20px;padding:20px;box-shadow:0 20px 60px rgba(16,24,40,.25)}
+.v28-edit-box h3{margin:0 0 6px;font-size:19px}.v28-edit-box .muted{margin-bottom:14px}
+.review-box{margin-top:9px;padding:9px 11px;border-radius:10px;background:#f8fafc;border:1px solid var(--line);font-size:12px}.history-filter{display:flex;gap:10px;margin:14px 0}.history-filter label{max-width:220px}@media(max-width:600px){.history-filter label{max-width:none;width:100%}}
+/* V39.1 Processing indicator */
+#sseProcessingOverlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.42);backdrop-filter:blur(2px)}
+#sseProcessingOverlay.show{display:flex}
+.sse-processing-box{width:min(270px,82vw);padding:22px 18px;border-radius:20px;background:#fff;box-shadow:0 18px 55px rgba(0,0,0,.25);text-align:center}
+.sse-processing-ring{width:72px;height:72px;margin:0 auto 13px;border-radius:50%;border:6px solid #e5e7eb;border-top-color:#2563eb;animation:sseSpin .8s linear infinite;display:flex;align-items:center;justify-content:center}
+.sse-processing-count{font-size:18px;font-weight:900;color:#1d4ed8;animation:ssePulse .8s ease-in-out infinite}
+.sse-processing-title{font-size:16px;font-weight:850;color:#111827}.sse-processing-sub{font-size:12px;color:#64748b;margin-top:5px}
+.sse-processing-done{display:none;font-size:28px;font-weight:900;color:#15803d}
+.sse-processing-box.done .sse-processing-ring{display:none}.sse-processing-box.done .sse-processing-count{display:none}.sse-processing-box.done .sse-processing-done{display:block}
+@keyframes sseSpin{to{transform:rotate(360deg)}}
+@keyframes ssePulse{50%{transform:scale(1.08)}}
+
+.version-pill{display:inline-block;background:#e6f4ea;color:#176b37;border:1px solid #9bd3ad;border-radius:999px;padding:3px 8px;font-weight:800;font-size:11px;letter-spacing:.3px}
+.upgrade-note{border:1px solid #9bd3ad;background:#f2fbf5;color:#174c2b;margin:12px auto;max-width:1100px;line-height:1.5}
+.upgrade-note small{display:block;margin-top:5px;color:#38634a}
+
+/* V58: premium AI-style dashboard skin, preserving existing routes and data */
+:root{--v20-navy:#071326;--v20-blue:#4f7cff;--ai-purple:#8b5cf6;--ai-cyan:#22d3ee}
+body{background:radial-gradient(ellipse at 12% 0%,rgba(79,124,255,.12),transparent 34%),radial-gradient(ellipse at 92% 8%,rgba(139,92,246,.10),transparent 30%),#f4f7fc}
+.dash-hero{position:relative;overflow:hidden;background:linear-gradient(125deg,#071326 0%,#11264a 58%,#253b75 100%);color:#fff;border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 40px rgba(7,19,38,.22)}
+.dash-hero:after{content:'✦ AI WORKSPACE';position:absolute;right:20px;bottom:14px;font-size:10px;font-weight:800;letter-spacing:2px;color:#c8d5ff;opacity:.78}
+.dash-hero p{color:#d2dcf5}.dash-date{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:9px 12px;color:#fff}
+.dashboard-kpi-wrap{border:1px solid #e0e7f5;background:rgba(255,255,255,.88);border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(22,39,78,.06);backdrop-filter:blur(12px)}
+.v20-kpi{border-radius:15px!important;border:1px solid #e5eaf5!important;background:linear-gradient(145deg,#fff,#f6f8ff)!important;box-shadow:0 6px 18px rgba(28,45,90,.05)}
+.v20-kpi .kpi-icon{border-radius:12px;background:linear-gradient(135deg,#e8efff,#f0eaff)!important}
+.dashboard-modules-top{border:1px solid #dce5f5;background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(246,248,255,.98));box-shadow:0 12px 30px rgba(22,39,78,.07)}
+.module-top-title{display:flex;align-items:center;gap:8px;color:#18294b}.module-top-title:after{content:'SMART MODULES';font-size:9px;letter-spacing:1.2px;color:#6479b4;background:#edf2ff;border:1px solid #dce5ff;border-radius:999px;padding:5px 8px}
+.dashboard-modules-top .module-choice{min-height:125px;border:1px solid #e0e7f5;background:linear-gradient(145deg,#fff,#f8faff);border-radius:16px;padding:14px;box-shadow:0 4px 12px rgba(20,42,90,.04)}
+.dashboard-modules-top .module-choice:hover{transform:translateY(-3px);border-color:#9eb8ff;box-shadow:0 12px 24px rgba(65,93,170,.13)}
+.dashboard-modules-top .module-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#e6edff,#f0e8ff);font-size:23px;margin-bottom:6px}
+.module-live-count{display:inline-flex;align-items:center;gap:5px;width:max-content;max-width:100%;margin-top:8px;padding:4px 8px;border-radius:999px;background:#edfdf5;color:#087443;border:1px solid #c4f1d7;font-size:10px;font-weight:850}
+.module-live-count:before{content:'';width:6px;height:6px;border-radius:50%;background:#12b76a}
+.dash-card{background:linear-gradient(145deg,#fff,#f8faff);border-color:#e0e7f5;box-shadow:0 8px 22px rgba(20,42,90,.055);transition:transform .18s,box-shadow .18s}
+.dash-card:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(20,42,90,.1)}
+.section-card{background:rgba(255,255,255,.96);border-color:#e0e7f5;box-shadow:0 8px 24px rgba(20,42,90,.045)}
+@media(max-width:600px){.dash-hero:after{display:none}.dashboard-kpi-wrap{padding:12px}.dashboard-modules-top .module-choice{min-height:116px;padding:11px}}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ===== V37 FIREBASE ONLINE TRIAL =====
+window.SSEFirebase = {ready:false, user:null, unsubscribe:null, syncing:false};
+window.SSEFirebaseConfig = {
+  apiKey: "AIzaSyApenAy7aZvJHqhBNgfU3rmeyMR9QJsrvo",
+  authDomain: "sse-reporting-app.firebaseapp.com",
+  databaseURL: "https://sse-reporting-app-default-rtdb.firebaseio.com",
+  projectId: "sse-reporting-app",
+  storageBucket: "sse-reporting-app.firebasestorage.app",
+  messagingSenderId: "287733224796",
+  appId: "1:287733224796:web:e54f3162198158f7861d99"
+};
+window.firebaseReady = (async()=>{
+  try {
+    const [{initializeApp},{getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,setPersistence,browserLocalPersistence},{getFirestore,doc,getDoc,setDoc,onSnapshot}] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js')
+    ]);
+    const firebaseConfig = window.SSEFirebaseConfig;
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    // V35: keep the Firebase login session on the same device/browser.
+    try { await setPersistence(auth, browserLocalPersistence); } catch(e) { console.warn('Auth persistence setup failed', e); }
+    window.SSEFirebase = {ready:true, app, auth, db, doc, getDoc, setDoc, onSnapshot, signInWithEmailAndPassword, signOut, onAuthStateChanged, user:null, unsubscribe:null, syncing:false, config:firebaseConfig};
+    onAuthStateChanged(auth, async (user)=>{
+      window.SSEFirebase.user=user||null;
+      if(user && window.SSEFirebase._afterLogin) await window.SSEFirebase._afterLogin(user);
+    });
+    return window.SSEFirebase;
+  } catch(err) {
+    console.error('Firebase init failed',err);
+    window.SSEFirebase.error=err;
+    return window.SSEFirebase;
+  }
+})();
+</script>
+<script>
+const KEY='sse_reporting_v1';'sse_reporting_v1';
+const state=JSON.parse(localStorage.getItem(KEY)||'null')||{user:null,reports:[],requests:[],attendance:[],members:[{name:'Team Member 1',assignedSites:[]},{name:'Team Member 2',assignedSites:[]}],sites:[],settings:{}};
+state.settings=state.settings||{};
+state.settings.version='V61 FULL SYSTEM RELIABILITY';
+state.notifications=Array.isArray(state.notifications)?state.notifications:[];
+state.notificationReceipts=Array.isArray(state.notificationReceipts)?state.notificationReceipts:[];
+state.settings.pushVapidKey=state.settings.pushVapidKey||'';
+state.settings.labels=Object.assign({appName:'SSE Reporting App',dailyReport:'Daily Work Report',attendance:'Attendance',material:'Material Request',workPermit:'Work Permit',tbt:'TBT Photo',site:'Site',tower:'Tower',floor:'Floor',materialField:'Material'},state.settings.labels||{});
+state.settings.permitTypes=Array.isArray(state.settings.permitTypes)&&state.settings.permitTypes.length?state.settings.permitTypes:[{name:'Day Permit',icon:'☀️'},{name:'Night Permit',icon:'🌙'},{name:'Height Work',icon:'🪜'},{name:'Hot Work',icon:'🔥'},{name:'Fabrication Work',icon:'🔧'},{name:'Other Permit',icon:'📋'}];
+state.settings.materials=Array.isArray(state.settings.materials)?state.settings.materials:[];
+state.settings.units=Array.isArray(state.settings.units)&&state.settings.units.length?state.settings.units:['Bags','Kg','Ton','Nos','Meter','Sq.ft','Other'];
+state.settings.dashboardDisabled=Array.isArray(state.settings.dashboardDisabled)?state.settings.dashboardDisabled:[];
+state.reports=Array.isArray(state.reports)?state.reports:[];state.requests=Array.isArray(state.requests)?state.requests:[];state.attendance=Array.isArray(state.attendance)?state.attendance:[];state.sites=Array.isArray(state.sites)?state.sites:[];state.members=Array.isArray(state.members)?state.members:[];state.moduleRecords=state.moduleRecords&&typeof state.moduleRecords==='object'?state.moduleRecords:{};state.moduleRecords.tbt=Array.isArray(state.moduleRecords.tbt)?state.moduleRecords.tbt:[];state.moduleRecords.workPermit=Array.isArray(state.moduleRecords.workPermit)?state.moduleRecords.workPermit:[];
+if(Array.isArray(state.attendance)){
+  const seenAttendance=new Map();
+  state.attendance.forEach(a=>{ if(a && a.name && a.date) seenAttendance.set(a.name+'|'+a.date,a); });
+  state.attendance=[...seenAttendance.values()];
+}
+state.members=(state.members||[]).map(m=>{
+  const x=typeof m==='string'?{name:m,assignedSites:[]}:((m&&m.assignedSites)?m:{...m,assignedSites:[]});
+  if(!x.id) x.id=crypto.randomUUID();
+  return x;
+});
+state.members.forEach(m=>{if(!m.id)m.id=crypto.randomUUID();});
+save();
+const $=s=>document.querySelector(s);
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(state));
+  // Manager writes to cloud. If the Firebase JS SDK is available, use it.
+  // When Android opens the downloaded HTML as content://, use Firestore REST
+  // with the ID token from direct Firebase Authentication instead.
+  if(state.user?.role==='manager' && !window.SSEFirebase.syncing){
+    if(window.SSEFirebase?.ready && window.SSEFirebase.user) cloudSave();
+    else if(state.authSession?.idToken) cloudRestSave();
+  }
+}
+let cloudSaveTimer=null;
+let cloudRestSaveTimer=null;
+let cloudRestSyncTimer=null;
+
+function cloudPayload(){
+  const copy=JSON.parse(JSON.stringify(state));
+  copy.user=null;
+  // Never store Firebase ID/refresh tokens inside Firestore.
+  delete copy.authSession;
+  return copy;
+}
+
+// V42: preserve submissions arriving from Team phones when Manager saves
+// settings/status changes at nearly the same time.
+function recordKey(item, fallbackIndex){
+  if(!item || typeof item!=='object')return 'value:'+String(item);
+  if(item.id)return 'id:'+item.id;
+  if(item.name && item.date)return 'attendance:'+item.name+'|'+item.date;
+  return 'fallback:'+fallbackIndex+':'+JSON.stringify(item);
+}
+function mergeRecordArrays(localRows, remoteRows){
+  const result=Array.isArray(localRows)?localRows.slice():[];
+  const seen=new Set(result.map(recordKey));
+  (Array.isArray(remoteRows)?remoteRows:[]).forEach((row,i)=>{
+    const key=recordKey(row,i);
+    if(!seen.has(key)){seen.add(key);result.push(row);}
+  });
+  return result;
+}
+function mergeIncomingSubmissions(localData, remoteData){
+  const merged={...remoteData,...localData};
+  ['reports','requests','attendance','notifications'].forEach(k=>{
+    merged[k]=mergeRecordArrays(localData?.[k],remoteData?.[k]);
+  });
+  merged.notifications=mergeRecordArrays(localData?.notifications,remoteData?.notifications);
+  merged.notificationReceipts=mergeRecordArrays(localData?.notificationReceipts,remoteData?.notificationReceipts);
+  merged.moduleRecords={...(remoteData?.moduleRecords||{}),...(localData?.moduleRecords||{})};
+  ['tbt','workPermit'].forEach(k=>{
+    merged.moduleRecords[k]=mergeRecordArrays(localData?.moduleRecords?.[k],remoteData?.moduleRecords?.[k]);
+  });
+  return merged;
+}
+function cloudSave(){
+  clearTimeout(cloudSaveTimer);
+  cloudSaveTimer=setTimeout(async()=>{
+    try{
+      if(!window.SSEFirebase?.user || window.SSEFirebase.syncing)return;
+      const ref=window.SSEFirebase.doc(window.SSEFirebase.db,'appData','main');
+      const snap=await window.SSEFirebase.getDoc(ref);
+      const remote=snap.exists()?(snap.data()||{}):{};
+      const payload=mergeIncomingSubmissions(cloudPayload(),remote);
+      payload.user=null;
+      delete payload.authSession;
+      await window.SSEFirebase.setDoc(ref,payload,{merge:false});
+    }catch(e){console.error('Cloud save failed',e);}
+  },250);
+}
+
+// ---------- V37 Firestore REST fallback for Android content:// ----------
+const FIRESTORE_DOC_URL='https://firestore.googleapis.com/v1/projects/'+
+  encodeURIComponent(window.SSEFirebaseConfig.projectId)+'/databases/(default)/documents/appData/main';
+
+function firestoreValue(v){
+  if(v===null || typeof v==='undefined') return {nullValue:null};
+  if(typeof v==='boolean') return {booleanValue:v};
+  if(typeof v==='number'){
+    return Number.isInteger(v) ? {integerValue:String(v)} : {doubleValue:v};
+  }
+  if(typeof v==='string') return {stringValue:v};
+  if(Array.isArray(v)) return {arrayValue:{values:v.map(firestoreValue)}};
+  if(typeof v==='object'){
+    const fields={};
+    Object.keys(v).forEach(k=>{fields[k]=firestoreValue(v[k]);});
+    return {mapValue:{fields}};
+  }
+  return {stringValue:String(v)};
+}
+function fromFirestoreValue(x){
+  if(!x)return null;
+  if('nullValue' in x)return null;
+  if('booleanValue' in x)return !!x.booleanValue;
+  if('integerValue' in x)return Number(x.integerValue);
+  if('doubleValue' in x)return Number(x.doubleValue);
+  if('timestampValue' in x)return x.timestampValue;
+  if('stringValue' in x)return x.stringValue;
+  if('bytesValue' in x)return x.bytesValue;
+  if('referenceValue' in x)return x.referenceValue;
+  if('arrayValue' in x)return (x.arrayValue?.values||[]).map(fromFirestoreValue);
+  if('mapValue' in x){
+    const out={};
+    Object.entries(x.mapValue?.fields||{}).forEach(([k,v])=>out[k]=fromFirestoreValue(v));
+    return out;
+  }
+  return null;
+}
+function fromFirestoreDoc(doc){
+  const out={};
+  Object.entries(doc?.fields||{}).forEach(([k,v])=>out[k]=fromFirestoreValue(v));
+  return out;
+}
+async function cloudRestGet(){
+  const token=state.authSession?.idToken;
+  if(!token)return null;
+  const r=await fetch(FIRESTORE_DOC_URL,{headers:{Authorization:'Bearer '+token,Accept:'application/json'}});
+  if(r.status===404)return null;
+  if(!r.ok)throw new Error('Cloud read failed ('+r.status+')');
+  return fromFirestoreDoc(await r.json());
+}
+
+// V40: Team members append their own submissions to Firestore without
+// uploading their whole local state. This prevents a team phone from
+// overwriting the Manager's latest sites, members, permissions or requests.
+async function cloudRestAppendArray(fieldPath,item){
+  if(state.user?.role==='manager')return true;
+  const token=state.authSession?.idToken;
+  if(!token || !item)return false;
+  try{
+    const url='https://firestore.googleapis.com/v1/projects/'+encodeURIComponent(window.SSEFirebaseConfig.projectId)+'/databases/(default)/documents:commit';
+    const body={writes:[{transform:{document:'projects/'+window.SSEFirebaseConfig.projectId+'/databases/(default)/documents/appData/main',fieldTransforms:[{fieldPath,appendMissingElements:{values:[firestoreValue(item)]}}]}}]};
+    const r=await fetch(url,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok){console.error('Team cloud append failed',fieldPath,r.status,await r.text());return false;}
+    // Immediately pull the shared document so this phone stays current too.
+    await syncRestNow(false);
+    return true;
+  }catch(e){console.error('Team cloud append failed',fieldPath,e);return false;}
+}
+
+let restSyncInFlight=false;
+async function syncRestNow(allowManagerWrite=true){
+  if(restSyncInFlight)return false;
+  restSyncInFlight=true;
+  try{
+    const incoming=await cloudRestGet();
+    if(!incoming)return false;
+    const currentUser=state.user;
+    const currentSession=state.authSession;
+    // Merge submission arrays instead of dropping a Team record that arrived
+    // just before this poll. Cloud master settings remain the shared source.
+    const merged=mergeIncomingSubmissions(incoming,incoming);
+    window.SSEFirebase.syncing=true;
+    Object.assign(state,merged);
+    state.user=currentUser;
+    if(currentSession)state.authSession=currentSession;
+    window.SSEFirebase.syncing=false;
+    localStorage.setItem(KEY,JSON.stringify(state));
+    // V49 FIX: never rerender/navigate during background cloud polling.
+    // Re-rendering called render() -> page('dashboard'), kicking users out
+    // of forms while typing on both manager and team devices. Keep the current
+    // screen and inputs intact; latest cloud data is used on the next navigation.
+    return true;
+  }catch(e){
+    window.SSEFirebase.syncing=false;
+    throw e;
+  }finally{
+    restSyncInFlight=false;
+  }
+}
+
+async function cloudRestSave(){
+  clearTimeout(cloudRestSaveTimer);
+  cloudRestSaveTimer=setTimeout(async()=>{
+    try{
+      const token=state.authSession?.idToken;
+      if(!token || state.user?.role!=='manager')return;
+      let payload=cloudPayload();
+      try{
+        const remote=await cloudRestGet();
+        if(remote)payload=mergeIncomingSubmissions(payload,remote);
+      }catch(readError){console.warn('Could not pre-merge latest cloud submissions:',readError);}
+      payload.user=null;
+      delete payload.authSession;
+      const body={fields:{}};
+      Object.entries(payload).forEach(([k,v])=>body.fields[k]=firestoreValue(v));
+      const r=await fetch(FIRESTORE_DOC_URL,{
+        method:'PATCH',
+        headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+        body:JSON.stringify(body)
+      });
+      if(!r.ok)console.error('Cloud REST save failed',r.status,await r.text());
+    }catch(e){console.error('Cloud REST save failed',e);}
+  },150);
+}
+async function startRestCloudSync(){
+  if(!state.authSession?.idToken)return;
+  try{
+    await syncRestNow(false);
+    if(!await cloudRestGet() && state.user?.role==='manager') await cloudRestSave();
+  }catch(e){console.warn('REST cloud sync unavailable:',e);}
+  clearInterval(cloudRestSyncTimer);
+  // Keep both phones live. This is intentionally independent of the Firebase
+  // JS SDK so Android content:// opens still receive new data without
+  // needing the user to download/open a newer HTML file.
+  cloudRestSyncTimer=setInterval(async()=>{
+    try{
+      if(!state.user || !state.authSession?.idToken || restSyncInFlight)return;
+      await syncRestNow(false);
+    }catch(e){console.warn('REST cloud polling failed:',e);}
+  },2000);
+}
+async function startCloudSync(user){
+  if(!window.SSEFirebase?.ready || !user)return;
+  try{
+    if(window.SSEFirebase.unsubscribe)window.SSEFirebase.unsubscribe();
+    const ref=window.SSEFirebase.doc(window.SSEFirebase.db,'appData','main');
+    const snap=await window.SSEFirebase.getDoc(ref);
+    if(snap.exists()){
+      window.SSEFirebase.syncing=true;
+      Object.assign(state,snap.data()||{});
+      state.user={role:user.email?.toLowerCase()==='silverstarenterprises51@gmail.com'?'manager':'team',name:state.user?.name||user.email?.split('@')[0]||'User',email:user.email,uid:user.uid};
+      window.SSEFirebase.syncing=false;
+      localStorage.setItem(KEY,JSON.stringify(state));
+    } else if(state.user?.role==='manager'){
+      await window.SSEFirebase.setDoc(ref,cloudPayload(),{merge:false});
+    }
+    window.SSEFirebase.unsubscribe=window.SSEFirebase.onSnapshot(ref,(d)=>{
+      if(!d.exists() || window.SSEFirebase.syncing)return;
+      const incoming=d.data()||{};
+      window.SSEFirebase.syncing=true;
+      const currentUser=state.user;
+      const currentSession=state.authSession;
+      Object.assign(state,incoming);
+      state.user=currentUser;
+      if(currentSession)state.authSession=currentSession;
+      window.SSEFirebase.syncing=false;
+      localStorage.setItem(KEY,JSON.stringify(state));
+      if(state.user) render();
+    },e=>console.error('Cloud sync failed',e));
+    localStorage.setItem(KEY,JSON.stringify(state));
+  }catch(e){console.error('Cloud sync start failed',e);}
+}
+function toast(message){
+  const el=document.getElementById('v20Toast');
+  if(!el){alert(message);return}
+  el.textContent=message;el.classList.add('show');
+  clearTimeout(window._v20ToastTimer);
+  window._v20ToastTimer=setTimeout(()=>el.classList.remove('show'),2200);
+}
+function ensureProcessingOverlay(){
+  if(document.getElementById('sseProcessingOverlay'))return;
+  const el=document.createElement('div');
+  el.id='sseProcessingOverlay';
+  el.innerHTML='<div class="sse-processing-box"><div class="sse-processing-ring"><span class="sse-processing-count">1/10</span></div><div class="sse-processing-done">✓</div><div class="sse-processing-title" id="sseProcessingTitle">Processing…</div><div class="sse-processing-sub" id="sseProcessingSub">Please wait</div></div>';
+  document.body.appendChild(el);
+}
+function startProcessing(title='Processing…',sub='Please wait'){
+  ensureProcessingOverlay();
+  const overlay=document.getElementById('sseProcessingOverlay');
+  const box=overlay.querySelector('.sse-processing-box');
+  box.classList.remove('done');
+  document.getElementById('sseProcessingTitle').textContent=title;
+  document.getElementById('sseProcessingSub').textContent=sub;
+  const count=overlay.querySelector('.sse-processing-count');
+  let n=1; count.textContent='1/10';
+  clearInterval(window._sseProcessingTimer);
+  window._sseProcessingTimer=setInterval(()=>{if(n<10){n++;count.textContent=n+'/10'}},90);
+  overlay.classList.add('show');
+  return overlay;
+}
+function finishProcessing(success=true,delay=450){
+  const overlay=document.getElementById('sseProcessingOverlay');
+  if(!overlay)return;
+  clearInterval(window._sseProcessingTimer);
+  const box=overlay.querySelector('.sse-processing-box');
+  if(success){box.classList.add('done');document.getElementById('sseProcessingTitle').textContent='Done';document.getElementById('sseProcessingSub').textContent='Process completed successfully';}
+  setTimeout(()=>{overlay.classList.remove('show');box.classList.remove('done')},delay);
+}
+function today(){return new Date().toISOString().slice(0,10)}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function uiLabel(key,fallback){return esc(state.settings?.labels?.[key]||fallback||key)}
+function permitTypes(){return state.settings.permitTypes||[]}
+function materialOptions(){return state.settings.materials||[]}
+function masterSettings(){
+ const labels=state.settings.labels||{};
+ shell(`<main class="wrap">${nav('visibility')}
+ <div class="card"><div class="section-head"><div><h2>⚙️ Master Setup</h2><div class="muted">यहाँ से app के नाम, Permit Type और Material names अपने हिसाब से बदलें। बदलाव के बाद team को वही नाम/options दिखेंगे।</div></div><span class="badge approved">CUSTOMIZE</span></div>
+ <h3 style="margin-top:18px">App / Module Names</h3>
+ <div class="form-grid">${[['appName','App Name'],['dailyReport','Daily Report'],['attendance','Attendance'],['material','Material Request'],['workPermit','Work Permit'],['tbt','TBT Photo'],['site','Site'],['tower','Tower'],['floor','Floor'],['materialField','Material']].map(([k,t])=>`<label>${t}<input id="lbl_${k}" value="${esc(labels[k]||'')}"></label>`).join('')}</div>
+ <div class="actions" style="margin-top:12px"><button class="btn primary" onclick="saveMasterLabels()">Save Names</button></div>
+ <div class="brand-editor"><h3>🖼️ App Logo</h3><div class="muted">Login और ऊपर header में दिखने वाला logo बदलें।</div><input type="file" id="appLogoFile" accept="image/*" onchange="saveAppLogo(this)">${state.settings.appLogo?`<img class="brand-logo-preview" src="${state.settings.appLogo}" alt="App logo">`:''}</div>
+ </div>
+ <div class="card"><div class="section-head"><div><h3>📋 Permit Types</h3><div class="muted">नया Permit Type जोड़ें, नाम/emoji बदलें या हटाएँ।</div></div><button class="btn primary" onclick="addPermitType()">+ Add Permit Type</button></div>
+ <div class="list">${permitTypes().map((x,i)=>`<div class="item"><div class="form-grid"><label>Icon<input id="pi_${i}" value="${esc(x.icon||'📋')}"></label><label>Permit Name<input id="pn_${i}" value="${esc(x.name||'')}"></label></div><div class="actions" style="margin-top:8px"><button class="btn" onclick="savePermitType(${i})">Save</button><button class="btn danger" onclick="deletePermitType(${i})">Delete</button></div></div>`).join('')||'<div class="empty">No permit types.</div>'}</div></div>
+ <div class="card"><div class="section-head"><div><h3>📦 Material Names</h3><div class="muted">Material Request में नीचे वाले names selectable होंगे। Custom material भी add कर सकते हैं।</div></div><button class="btn primary" onclick="addMaterialMaster()">+ Add Material</button></div>
+ <div class="list">${materialOptions().map((x,i)=>`<div class="item"><div class="row"><b>${esc(x)}</b><span class="badge">Material</span></div><div class="actions" style="margin-top:8px"><button class="btn" onclick="editMaterialMaster(${i})">Edit</button><button class="btn danger" onclick="deleteMaterialMaster(${i})">Delete</button></div></div>`).join('')||'<div class="empty">No preset materials yet. Add your first material.</div>'}</div></div>
+ <div class="card"><div class="section-head"><div><h3>📏 Material Units</h3><div class="muted">Material Request में कौन-कौन से units दिखें, अपने हिसाब से बदलें।</div></div><button class="btn primary" onclick="addUnitMaster()">+ Add Unit</button></div>
+ <div class="list">${(state.settings.units||[]).map((x,i)=>`<div class="item"><div class="row"><b>${esc(x)}</b><span class="badge">Unit</span></div><div class="actions" style="margin-top:8px"><button class="btn" onclick="editUnitMaster(${i})">Edit</button><button class="btn danger" onclick="deleteUnitMaster(${i})">Delete</button></div></div>`).join('')||'<div class="empty">No units.</div>'}</div></div>
+ <div class="card"><div class="section-head"><div><h3>📍 Site & Tower Master</h3><div class="muted">Site/Tower यहाँ add करने पर assigned team member को वही Site और उसके Towers दिखेंगे।</div></div><button class="btn primary" onclick="page('sites')">Open Site & Tower Setup</button></div></div>
+ </main>`)
+}
+function saveAppLogo(input){const f=input?.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{state.settings.appLogo=r.result;save();toast('App logo saved');masterSettings()};r.readAsDataURL(f)}
+function saveMasterLabels(){['appName','dailyReport','attendance','material','workPermit','tbt','site','tower','floor','materialField'].forEach(k=>{const el=$('#lbl_'+k);if(el)state.settings.labels[k]=el.value.trim()||k});save();toast('Custom names saved');masterSettings()}
+function addPermitType(){const name=prompt('New Permit Type name');if(!name?.trim())return;const icon=prompt('Icon / emoji','📋')||'📋';state.settings.permitTypes.push({name:name.trim(),icon:icon.trim()||'📋'});save();masterSettings()}
+function savePermitType(i){const n=$('#pn_'+i)?.value.trim();if(!n)return alert('Permit name is required');state.settings.permitTypes[i]={name:n,icon:$('#pi_'+i)?.value.trim()||'📋'};save();masterSettings()}
+function deletePermitType(i){if(!confirm('Delete this Permit Type?'))return;state.settings.permitTypes.splice(i,1);save();masterSettings()}
+function addMaterialMaster(){const n=prompt('Material name');if(n?.trim()){state.settings.materials.push(n.trim());state.settings.materials=[...new Set(state.settings.materials)];save();masterSettings()}}
+function editMaterialMaster(i){const n=prompt('Edit material name',state.settings.materials[i]);if(!n?.trim())return;state.settings.materials[i]=n.trim();state.settings.materials=[...new Set(state.settings.materials)];save();masterSettings()}
+function deleteMaterialMaster(i){if(!confirm('Delete this Material name?'))return;state.settings.materials.splice(i,1);save();masterSettings()}
+function addUnitMaster(){const n=prompt('Unit name (e.g. Box, Piece, Roll)');if(n?.trim()){state.settings.units.push(n.trim());state.settings.units=[...new Set(state.settings.units)];save();masterSettings()}}
+function editUnitMaster(i){const n=prompt('Edit unit name',state.settings.units[i]);if(!n?.trim())return;state.settings.units[i]=n.trim();state.settings.units=[...new Set(state.settings.units)];save();masterSettings()}
+function deleteUnitMaster(i){if(!confirm('Delete this Unit?'))return;state.settings.units.splice(i,1);save();masterSettings()}
+function dashboardModuleCatalog(){return [
+  {id:'material',description:'Material Request module और Dashboard card'},
+  {id:'tbt',description:'TBT Sheet module और Dashboard card'},
+  {id:'workPermit',description:'Work Permit module और Dashboard card'},
+  {id:'attendance',description:'Attendance module और Dashboard card'},
+  {id:'activity',description:'Latest Activity section on Manager Dashboard'}
+]}
+function dashboardModuleDisabled(id){return (state.settings.dashboardDisabled||[]).includes(id)}
+function deleteDashboardModule(id){if(state.user?.role!=='manager')return alert('Manager access required');if(!confirm('Delete/disable this Dashboard module?'))return;state.settings.dashboardDisabled=[...(state.settings.dashboardDisabled||[]),id].filter((x,i,a)=>a.indexOf(x)===i);save();toast('Dashboard module deleted');managerDashboard()}
+function restoreDashboardModule(id){if(state.user?.role!=='manager')return alert('Manager access required');state.settings.dashboardDisabled=(state.settings.dashboardDisabled||[]).filter(x=>x!==id);save();toast('Dashboard module restored');masterSettings()}
+function shell(content){
+  const u=state.user;
+  const role=u?.role==='manager'?'Manager':'Team Member';
+  const bottom=u?`<div class="v20-bottom-nav">
+    <button class="${location.hash==='#dashboard'?'active':''}" onclick="page('dashboard')">🏠<br>Home</button>
+    ${u.role==='manager'
+      ? `<button onclick="page('requests')">📦<br>Requests</button><button onclick="page('reports')">📝<br>Reports</button><button onclick="page('team')">👥<br>Team</button><button onclick="page('visibility')">⚙️<br>Admin</button>`
+      : `<button onclick="page('report')">📝<br>Report</button><button onclick="page('attendance')">🕘<br>Attend</button><button onclick="page('material')">📦<br>Material</button><button onclick="page('workPermit')">📋<br>Permit</button>`}
+  </div>`:'';
+  document.getElementById('app').innerHTML=`<div class="app">
+  <header class="top"><img src="${state.settings.appLogo||'icons/sse-logo-192.png'}"><div><h1>${uiLabel('appName','SSE Reporting App')}</h1><small>Silver Star Enterprises • <span class="version-pill" title="Current upgraded app version">V61 FULL SYSTEM RELIABILITY</span></small></div>
+  <div style="margin-left:auto;display:flex;align-items:center">${u?`<span class="user-chip"><span class="user-dot"></span>${esc(u.name)} · ${role}</span><button class="btn" onclick="logout()">Logout</button>`:''}</div></header>
+  ${content}<div class="card upgrade-note" role="status"><b>🆕 App Updated: V61 FULL SYSTEM RELIABILITY</b><div>फॉर्म में ऑप्शन चुनते समय स्क्रीन पीछे जाने/रीसेट होने की समस्या रोकने के लिए टच और लॉन्ग-प्रेस हैंडलिंग सुधारी गई है। कई विकल्प चुनकर फिर आगे बढ़ सकते हैं।</div><small>Update History: V61 — Assignment, Site, Report/TBT sync reliability; V53 — अलग Assign menu और site-wise Work Report assignment; V52 — Site assignment और Work Report access; V51 — फॉर्म/चेकबॉक्स के ऊपर गलती से खुलने वाला long-press editor बंद; V49 — auto-back fix; V48 — Cloud Queue और notification status tracking. ऐप बंद होने पर Push के लिए Firebase VAPID key और Cloud Function सेटअप आवश्यक है।</small></div><div class="footer">SSE Reporting App • V61 FULL SYSTEM RELIABILITY • Firebase cloud sync enabled</div>${bottom}<div id="v20Toast" class="v20-toast"></div></div>`;
+}
+function login(){
+ shell(`<main class="wrap"><div class="card login"><img class="logo" src="${state.settings.appLogo||'icons/sse-logo-512.png'}"><h2 style="text-align:center">${uiLabel('appName','SSE Reporting App')}</h2><p class="muted" style="text-align:center">Construction Site Daily Reporting • Online Trial</p>
+ <label>Login Email</label><input id="email" type="email" autocomplete="username" placeholder="Enter Firebase login email">
+ <label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Enter password">
+ <div class="actions" style="margin-top:14px"><button class="btn primary" onclick="doLogin()">Login</button><button class="btn" onclick="installApp()">Install App</button></div>
+ <p class="muted" style="font-size:12px;margin-top:12px">Firebase online trial: login uses your existing Firebase Authentication account and app data syncs between logged-in phones.</p></div></main>`);
+}
+async function doLogin(){
+ const email=$('#email')?.value.trim(), password=$('#password')?.value||'';
+ if(!email||!password)return alert('Email and password are required.');
+
+ const btn=document.querySelector('button[onclick="doLogin()"]');
+ if(btn){btn.disabled=true;btn.textContent='Signing in…';}
+ startProcessing('Logging in…','Connecting securely to Firebase');
+
+ try{
+   // V37: Direct Firebase Auth REST fallback.
+   // This works even when the HTML is opened from Android content://downloads/
+   // and the Firebase ES-module SDK cannot initialize inside the file viewer.
+   const endpoint='https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+
+     encodeURIComponent(window.SSEFirebaseConfig.apiKey);
+   const resp=await fetch(endpoint,{
+     method:'POST',
+     headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({email,password,returnSecureToken:true})
+   });
+   const data=await resp.json().catch(()=>({}));
+   if(!resp.ok){
+     const code=data?.error?.message||'';
+     const err=new Error(code);
+     err.code=code;
+     throw err;
+   }
+
+   const role=email.toLowerCase()==='silverstarenterprises51@gmail.com'?'manager':'team';
+   state.user={role,name:email.split('@')[0],email:email,uid:data.localId};
+   // Keep the Auth session locally so reopening the downloaded app can restore it.
+   state.authSession={
+     idToken:data.idToken||'',
+     refreshToken:data.refreshToken||'',
+     expiresIn:data.expiresIn||'3600',
+     issuedAt:Date.now()
+   };
+   localStorage.setItem(KEY,JSON.stringify(state));
+
+   // Login is complete. Never wait for the Firebase JS SDK or Firestore here.
+   render();
+   toast('Login successful');
+   finishProcessing(true);
+
+   // Direct-login mode must also sync with Firestore. This is the path used
+   // when Android opens the HTML as content://downloads/...
+   startRestCloudSync().catch(e=>console.warn('Initial REST sync unavailable:',e));
+
+   // If the normal Firebase SDK loads, silently establish its session too,
+   // then start Firestore sync in the background.
+   window.firebaseReady.then(async fb=>{
+     if(!fb?.ready)return;
+     try{
+       const cred=await fb.signInWithEmailAndPassword(fb.auth,email,password);
+       await startCloudSync(cred.user);
+       render();
+     }catch(e){console.warn('Optional SDK/cloud sync unavailable:',e);}
+   }).catch(e=>console.warn('Firebase SDK unavailable:',e));
+
+ }catch(e){
+   console.error('Login failed',e);
+   const code=e?.code||e?.message||'';
+   let msg='Login failed.';
+   if(code==='INVALID_LOGIN_CREDENTIALS' || code==='INVALID_PASSWORD' || code==='EMAIL_NOT_FOUND' || code==='auth/invalid-credential')
+     msg='Email या password गलत है।';
+   else if(code==='INVALID_EMAIL') msg='Email सही format में डालें।';
+   else if(code==='TOO_MANY_ATTEMPTS_TRY_LATER') msg='बहुत ज्यादा login attempts हुए हैं। थोड़ी देर बाद फिर कोशिश करें।';
+   else if(code==='NETWORK_REQUEST_FAILED') msg='Internet connection check करें और फिर Login दबाएँ।';
+   else if(e?.message==='Failed to fetch') msg='Internet connection या Firebase connection check करें।';
+   else if(e?.message) msg=e.message;
+   alert(msg);
+   finishProcessing(false,0);
+ }finally{
+   const b=document.querySelector('button[onclick="doLogin()"]');
+   if(b){b.disabled=false;b.textContent='Login';}
+   if(document.getElementById('sseProcessingOverlay')?.classList.contains('show')) finishProcessing(false,0);
+ }
+}
+async function logout(){
+ try{clearInterval(cloudRestSyncTimer);if(window.SSEFirebase?.unsubscribe)window.SSEFirebase.unsubscribe();if(window.SSEFirebase?.auth)await window.SSEFirebase.signOut(window.SSEFirebase.auth);}catch(e){}
+ state.user=null;
+ delete state.authSession;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ login();
+}
+
+function customMenus(){
+ if(!state.settings) state.settings={};
+ if(!Array.isArray(state.settings.customMenus)) state.settings.customMenus=[];
+ return state.settings.customMenus;
+}
+function customMenuEditor(){
+ const menus=customMenus();
+ shell(`<main class="wrap">${nav('customMenuEditor')}<div class="dash-hero"><div><h2>➕ Custom Menu Builder</h2><p>Manager अपने हिसाब से नए मुख्य मेन्यू और उनके अंदर सिस्टम बना सकता है।</p></div></div>
+ <div class="section-card"><div class="section-head"><div><h2>🧩 आपके Custom Menus</h2><div class="muted">उदाहरण: Billing → Bill Entry, Bill Approval, Bill Report</div></div></div>
+ ${menus.map((m,i)=>`<div class="custom-menu-edit-row"><div class="custom-menu-preview"><span>${esc(m.icon||'📁')}</span><div><b>${esc(m.title||'Untitled')}</b><small>${(m.items||[]).length} systems</small></div></div><div class="actions"><button class="btn" onclick="editCustomMenu(${i})">✏️ Edit</button><button class="btn danger" onclick="deleteCustomMenu(${i})">🗑️ Delete</button></div></div>`).join('')||'<div class="empty">अभी कोई custom menu नहीं है। ऊपर + Add दबाकर पहला menu बनाइए।</div>'}
+ <button class="btn primary" style="width:100%;margin-top:12px" onclick="editCustomMenu(-1)">＋ Add New Menu</button></div></main>`)
+}
+function editCustomMenu(index){
+ const m=index>=0?customMenus()[index]:{title:'',icon:'📁',subtitle:'',items:[]};
+ shell(`<main class="wrap">${nav('customMenuEditor')}<div class="card"><h2>${index>=0?'✏️ Edit Custom Menu':'➕ Add Custom Menu'}</h2><div class="notice">एक मुख्य menu बनाइए और नीचे उसके अंदर आने वाले systems के नाम एक-एक लाइन में लिखिए।</div>
+ <label>Menu Name</label><input id="cmTitle" value="${esc(m.title||'')}" placeholder="जैसे Billing">
+ <label>Icon / Logo</label><input id="cmIcon" value="${esc(m.icon||'📁')}" placeholder="📁">
+ <label>Short Description</label><input id="cmSub" value="${esc(m.subtitle||'')}" placeholder="जैसे Billing & Accounts">
+ <label>Systems / Sub-menu Items <span class="muted">(हर नाम नई line में)</span></label><textarea id="cmItems" placeholder="Bill Entry
+Bill Approval
+Bill Report
+Payment Status">${esc((m.items||[]).join('\n'))}</textarea>
+ <div class="actions" style="margin-top:14px"><button class="btn primary" onclick="saveCustomMenu(${index})">💾 Save Menu</button><button class="btn" onclick="customMenuEditor()">Cancel</button></div></div></main>`)
+}
+function saveCustomMenu(index){
+ const title=($('#cmTitle')?.value||'').trim(); if(!title)return alert('Menu Name जरूरी है।');
+ const items=($('#cmItems')?.value||'').split('\n').map(x=>x.trim()).filter(Boolean);
+ const menu={id:index>=0?customMenus()[index].id:crypto.randomUUID(),title,icon:($('#cmIcon')?.value||'📁').trim()||'📁',subtitle:($('#cmSub')?.value||'').trim(),items};
+ if(index>=0) customMenus()[index]=menu; else customMenus().push(menu); save(); toast('Custom menu saved'); customMenuEditor();
+}
+function deleteCustomMenu(index){if(!confirm('इस custom menu को हटाना है?'))return;customMenus().splice(index,1);save();customMenuEditor()}
+function customMenuPage(id){const m=customMenus().find(x=>x.id===id);if(!m)return customMenuEditor();shell(`<main class="wrap">${nav(id)}<div class="dash-hero"><div><h2>${esc(m.icon||'📁')} ${esc(m.title)}</h2><p>${esc(m.subtitle||'Custom system menu')}</p></div></div><div class="section-card"><div class="section-head"><h2>📂 ${esc(m.title)} Systems</h2><span class="badge">${(m.items||[]).length} Items</span></div><div class="custom-system-grid">${(m.items||[]).map((x,xi)=>`<button class="custom-system-card" data-custom-menu-id="${esc(m.id)}" data-custom-item-index="${xi}" onclick="toast('System selected')"><span>▣</span><b>${esc(x)}</b><small>Open system</small></button>`).join('')||'<div class="empty">इस menu में अभी कोई system नहीं है।</div>'}</div></div></main>`)}
+function nav(active){
+const custom=customMenus();
+const managerNav=[['dashboard','Dashboard'],['assign','📍 Assign'],['notifications','🔔 Notifications'],['requests','Requests'],['reports','Reports'],['permitCheck','📋 Permit Check'],['dailyHistory','📅 Daily History'],['team','Team'],...custom.map(m=>[m.id,`${m.icon||'📁'} ${m.title}`]),['visibility','👥 Team Admin']];
+const allMemberNav=[['dashboard','My Dashboard','dashboard'],['notifications','🔔 Notifications','notifications'],['report',uiLabel('dailyReport','Daily Report'),'report'],['attendance',uiLabel('attendance','Attendance'),'attendance'],['material',uiLabel('material','Material Request'),'material'],['tbt','📸 '+uiLabel('tbt','TBT Photo'),'tbt'],['workPermit','📋 '+uiLabel('workPermit','Work Permit'),'workPermit']];
+const memberNav=allMemberNav.filter(x=>x[2]==='dashboard'||x[2]==='report'||moduleVisibleForCurrentUser(x[2])).map(x=>[x[0],x[1]]);
+const items=state.user.role==='manager'?managerNav:memberNav;
+return `<div class="nav nav-scroll">${items.map(([k,t])=>`<button class="btn ${active===k?'primary':''}" data-v28-route="${esc(k)}" data-v28-label="${esc(t.replace(/^[^\w\u00C0-\uFFFF]+/,'').trim())}" onclick="page('${k}')">${t}</button>`).join('')}${state.user.role==='manager'?`<button class="btn custom-add-btn" onclick="page('customMenuEditor')">＋ Add</button>`:''}</div>`;
+}
+function page(p='dashboard'){
+if(!state.user)return login();
+if(p==='notifications') return notificationCenter();
+if(p==='customMenuEditor' && state.user.role==='manager') return customMenuEditor();
+if(customMenus().some(m=>m.id===p)) return customMenuPage(p);
+if(p==='visibility' && state.user.role==='manager') return managerVisibility();
+ if(p==='admin' && state.user.role==='manager') return managerVisibility();
+if(p==='masterSettings' && state.user.role==='manager') return masterSettings();
+if(p==='dashboardEditor' && state.user.role==='manager') return dashboardEditor();
+if(p==='tbt') return moduleFormPage('tbt');
+if(p==='workPermit') return state.user?.role==='manager' ? managerPermitCheck() : moduleFormPage('workPermit');
+if(p==='material') { }
+if(p==='attendance') { }
+if(state.user.role==='manager') return managerPage(p);
+return teamPage(p);
+}
+function dashboardCardDefaults(){return [
+ {id:'material',title:uiLabel('material','Material Request'),subtitle:'Open requests & records',icon:'📦',route:'materialList'},
+ {id:'workPermit',title:uiLabel('workPermit','Work Permit'),subtitle:'Permit records',icon:'📋',route:'workPermit'},
+ {id:'tbt',title:uiLabel('tbt','TBT Photo'),subtitle:'Photo only',icon:'📸',route:'tbt'},
+ {id:'attendance',title:uiLabel('attendance','Attendance'),subtitle:'Attendance records',icon:'🕘',route:'attendanceList'},
+ {id:'reports',title:'Work Reports',subtitle:'Daily work records',icon:'📝',route:'reports'},
+ {id:'team',title:'Team',subtitle:'Team members',icon:'👥',route:'teamList'}
+]}
+function dashboardCards(){
+ const defs=dashboardCardDefaults(); const saved=state.settings.dashboardCards||[];
+ const out=defs.map(d=>Object.assign({},d,saved.find(x=>x.id===d.id)||{}));
+ state.settings.dashboardCards=out; return out;
+}
+function saveDashboardCard(i){
+ const cards=dashboardCards(), c=cards[i]; if(!c)return;
+ c.title=($('#dc_title_'+i)?.value||'').trim()||c.title;
+ c.subtitle=($('#dc_sub_'+i)?.value||'').trim()||'';
+ c.icon=($('#dc_icon_'+i)?.value||'').trim()||'📌';
+ c.enabled=$('#dc_enabled_'+i)?.checked!==false;
+ save();toast('Dashboard item saved');dashboardEditor();
+}
+function resetDashboardCard(i){const d=dashboardCardDefaults()[i];if(!d)return;dashboardCards()[i]=Object.assign({},d);save();dashboardEditor()}
+function handleDashboardImage(i,input){const f=input?.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{dashboardCards()[i].image=r.result;save();dashboardEditor()};r.readAsDataURL(f)}
+function dashboardEditor(){
+ if(state.user?.role!=='manager')return page('dashboard');
+ const cards=dashboardCards();
+ shell(`<main class="wrap">${nav('dashboard')}<div class="card dashboard-editor">
+ <div class="section-head"><div><h2>🖥️ Dashboard Editor</h2><div class="muted">ऊपर Dashboard पर जो पूरी list दिखती है, हर item को अलग से edit/save करें। नाम, subtitle, icon और thumbnail बदल सकते हैं।</div></div><span class="badge approved">MANAGER ONLY</span></div>
+ <div class="notice"><b>कैसे काम करेगा:</b> नीचे किसी item को बदलें → Save दबाएँ → Dashboard पर वही नाम/thumbnail दिखेगा। Disable करने पर वह item Dashboard list में नहीं दिखेगा।</div>
+ <div class="dashboard-editor-list">${cards.map((c,i)=>`<div class="dashboard-edit-card">
+   <div class="dashboard-edit-preview">${c.image?`<img src="${c.image}" alt="thumbnail">`:`<div class="dashboard-edit-icon">${esc(c.icon||'📌')}</div>`}<div><b>${esc(c.title)}</b><small>${esc(c.subtitle||'')}</small></div></div>
+   <div class="form-grid"><label>Name / Title<input id="dc_title_${i}" value="${esc(c.title||'')}"></label><label>Subtitle<input id="dc_sub_${i}" value="${esc(c.subtitle||'')}"></label><label>Icon / Logo<input id="dc_icon_${i}" value="${esc(c.icon||'')}" placeholder="📦"></label><label>Thumbnail<input type="file" accept="image/*" onchange="handleDashboardImage(${i},this)"></label></div>
+   <label class="check-row"><input id="dc_enabled_${i}" type="checkbox" ${c.enabled!==false?'checked':''}> Dashboard पर दिखाएँ</label>
+   <div class="actions"><button class="btn primary" onclick="saveDashboardCard(${i})">💾 Save</button><button class="btn" onclick="resetDashboardCard(${i})">↺ Reset</button>${c.image?`<button class="btn danger" onclick="dashboardCards()[${i}].image='';save();dashboardEditor()">Remove Thumbnail</button>`:''}</div>
+ </div>`).join('')}</div>
+ </div></main>`)
+}
+function dashboardAppBrandEditor(){return masterSettings()}
+// V48: lightweight notification queue. Records are tiny metadata only; photos/reports remain in their existing records.
+function queueEvent({type,title,body,siteId='',siteName='',toRole='manager',toNames=[],recordId=''}){
+  const ev={id:crypto.randomUUID(),type,title,body,siteId,siteName,toRole,toNames:Array.isArray(toNames)?toNames:[],recordId,
+    fromName:state.user?.name||'System',fromRole:state.user?.role||'system',createdAt:new Date().toISOString(),status:'Sent',seenBy:[],acceptedBy:[]};
+  state.notifications=Array.isArray(state.notifications)?state.notifications:[];
+state.notificationReceipts=Array.isArray(state.notificationReceipts)?state.notificationReceipts:[];
+  state.notifications.push(ev); if(state.notifications.length>300)state.notifications=state.notifications.slice(-300);
+  localStorage.setItem(KEY,JSON.stringify(state));
+  // Manager saves through the existing cloud sync; team phones append only this event.
+  if(state.user?.role==='manager') save();
+  else cloudRestAppendArray('notifications',ev).catch(e=>console.warn('Notification queue append failed',e));
+  return ev;
+}
+function notificationMatches(ev){
+ const u=state.user||{};
+ if(ev.toRole==='all')return true;
+ if(ev.toRole && ev.toRole!==u.role)return false;
+ if(Array.isArray(ev.toNames)&&ev.toNames.length&&!ev.toNames.includes(u.name))return false;
+ return true;
+}
+function hasNotificationReceipt(evId,status){return (state.notificationReceipts||[]).some(x=>x.eventId===evId&&x.userName===state.user?.name&&x.status===status);}
+function notificationSeen(evId){
+ const ev=(state.notifications||[]).find(x=>x.id===evId); if(!ev)return;
+ ev.seenBy=Array.isArray(ev.seenBy)?ev.seenBy:[];if(!ev.seenBy.includes(state.user.name))ev.seenBy.push(state.user.name);
+ if(ev.status==='Sent')ev.status='Delivered'; ev.status='Seen';
+ const receipt={id:crypto.randomUUID(),eventId:evId,userName:state.user.name,status:'Seen',createdAt:new Date().toISOString()};state.notificationReceipts.push(receipt);
+ save();if(state.user?.role!=='manager')cloudRestAppendArray('notificationReceipts',receipt);notificationCenter();
+}
+function notificationAccept(evId){
+ const ev=(state.notifications||[]).find(x=>x.id===evId); if(!ev)return;
+ ev.acceptedBy=Array.isArray(ev.acceptedBy)?ev.acceptedBy:[];if(!ev.acceptedBy.includes(state.user.name))ev.acceptedBy.push(state.user.name);
+ ev.seenBy=Array.isArray(ev.seenBy)?ev.seenBy:[];if(!ev.seenBy.includes(state.user.name))ev.seenBy.push(state.user.name);
+ ev.status='Accepted';const receipt={id:crypto.randomUUID(),eventId:evId,userName:state.user.name,status:'Accepted',createdAt:new Date().toISOString()};state.notificationReceipts.push(receipt);save();if(state.user?.role!=='manager')cloudRestAppendArray('notificationReceipts',receipt);notificationCenter();
+}
+function savePushKey(){if(state.user?.role!=='manager')return alert('Manager access required');state.settings.pushVapidKey=($('#pushVapidKey')?.value||'').trim();save();toast('VAPID key saved');notificationCenter()}
+function createSiteTransfer(){
+ if(state.user?.role!=='manager')return alert('Manager access required');
+ const from=$('#transferFrom')?.value||'',to=$('#transferTo')?.value||'',details=$('#transferDetails')?.value.trim()||'';
+ if(!from||!to||from===to)return alert('अलग-अलग From Site और To Site चुनें।');if(!details)return alert('क्या भेज रहे हैं, वह लिखें।');
+ const fromSite=(state.sites||[]).find(x=>x.id===from),toSite=(state.sites||[]).find(x=>x.id===to);
+ const recipients=(state.members||[]).filter(m=>(m.assignedSites||[]).includes(to)).map(m=>m.name);
+ const transfer={id:crypto.randomUUID(),fromSiteId:from,fromSiteName:fromSite?.name||'',toSiteId:to,toSiteName:toSite?.name||'',details,createdBy:state.user.name,createdAt:new Date().toISOString(),status:'Sent'};
+ state.siteTransfers=Array.isArray(state.siteTransfers)?state.siteTransfers:[];state.siteTransfers.push(transfer);
+ queueEvent({type:'site-transfer',title:'Site-to-Site Transfer',body:`${fromSite?.name||from} → ${toSite?.name||to}: ${details}`,siteId:to,siteName:toSite?.name||'',toRole:'team',toNames:recipients,recordId:transfer.id});save();toast('Transfer notice queued');notificationCenter();
+}
+function notificationCenter(){
+ const rows=(state.notifications||[]).filter(x=>x.type!=='notification-receipt'&&notificationMatches(x)).slice().reverse();
+ const unread=rows.filter(x=>!hasNotificationReceipt(x.id,'Seen')&&!hasNotificationReceipt(x.id,'Accepted')&&!(x.seenBy||[]).includes(state.user.name)).length;
+ shell(`<main class="wrap">${nav('notifications')}<div class="card"><div class="section-head"><div><h2>🔔 Notifications & Cloud Queue</h2><div class="muted">नया काम, रिपोर्ट और साइट अपडेट यहाँ दिखेंगे। Unread: <b>${unread}</b></div></div><button class="btn" onclick="setupPushNotifications()">📲 Enable Push</button></div>
+ <div class="notice"><b>Queue status:</b> Sent → Delivered → Seen → Accepted. यह स्थिति ऐप में रिकॉर्ड होती है; दूसरे फोन पर सिंक के लिए Firebase cloud sync चालू होना चाहिए।</div>
+ ${state.user.role==='manager'?`<div class="item"><h3>🔑 Push setup</h3><label>Firebase Web Push VAPID public key</label><input id="pushVapidKey" value="${esc(state.settings.pushVapidKey||'')}" placeholder="Firebase Console → Project Settings → Cloud Messaging"><button class="btn primary" style="margin-top:8px" onclick="savePushKey()">Save VAPID Key</button><div class="muted" style="font-size:12px;margin-top:6px">VAPID key public key है, secret नहीं। ऐप बंद होने पर Push के लिए sender function भी deploy करना होगा।</div></div>`:''}
+ ${state.user.role==='manager'?(state.sites||[]).length>1?`<div class="item"><h3>↔️ Site-to-Site Transfer Notice</h3><div class="form-grid"><label>From Site<select id="transferFrom">${state.sites.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}</select></label><label>To Site<select id="transferTo">${state.sites.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}</select></label></div><label>What is being sent?</label><input id="transferDetails" placeholder="e.g. material, report, work instructions"><button class="btn primary" style="margin-top:8px" onclick="createSiteTransfer()">Send Transfer Notice</button></div>`:'' : ''}
+ <div class="list">${rows.map(ev=>{const seen=hasNotificationReceipt(ev.id,'Seen')||hasNotificationReceipt(ev.id,'Accepted')||(ev.seenBy||[]).includes(state.user.name);const accepted=hasNotificationReceipt(ev.id,'Accepted')||(ev.acceptedBy||[]).includes(state.user.name);const myStatus=accepted?'Accepted':seen?'Seen':ev.status||'Sent';return `<div class="item"><div class="row" style="align-items:flex-start"><div style="flex:1;min-width:0"><b>${esc(ev.title||ev.type||'Update')}</b><div>${esc(ev.body||'')}</div><div class="muted" style="font-size:12px;margin-top:5px">${esc(ev.siteName||'')} · ${esc(ev.fromName||'')} · ${esc(new Date(ev.createdAt||Date.now()).toLocaleString())}</div><div style="margin-top:6px"><span class="badge ${accepted?'approved':seen?'':'pending'}">${esc(myStatus)}</span></div></div>${!seen?`<button class="btn" onclick="notificationSeen('${esc(ev.id)}')">Mark Seen</button>`:''}${!accepted&&ev.toRole!=='manager'?`<button class="btn primary" onclick="notificationAccept('${esc(ev.id)}')">Accept</button>`:''}</div></div>`}).join('')||'<div class="empty">अभी कोई नोटिफिकेशन नहीं है। नई रिपोर्ट/रिक्वेस्ट/असाइनमेंट आने पर यहाँ दिखेगा।</div>'}</div>
+ <div class="muted" style="font-size:12px;margin-top:12px">Push नोटिफिकेशन सेटअप: VAPID key और Firebase Cloud Function आवश्यक हैं। केवल इस बटन से ऐप बंद होने पर Push सक्रिय नहीं होता।</div></div></main>`);
+}
+async function setupPushNotifications(){
+ if(!('Notification' in window)||!('serviceWorker' in navigator)){alert('इस ब्राउज़र में Push Notification उपलब्ध नहीं है। HTTPS पर Chrome/Edge या समर्थित मोबाइल ब्राउज़र इस्तेमाल करें।');return;}
+ try{
+  const permission=await Notification.requestPermission();
+  if(permission!=='granted'){alert('Notification permission नहीं मिली। Browser settings में अनुमति दें।');return;}
+  if(!state.settings.pushVapidKey){alert('पहले Notifications पेज में VAPID key सेव करें। ऐप बंद होने पर Push के लिए server-side Cloud Function भी deploy होना चाहिए।');return;}
+  if(!window.SSEFirebase?.ready){alert('Firebase SDK अभी तैयार नहीं है। इंटरनेट कनेक्शन जाँचें और फिर प्रयास करें।');return;}
+  const {getMessaging,getToken,onMessage}=await import('https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging.js');
+  const reg=await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+  const messaging=getMessaging(window.SSEFirebase.app);
+  const token=await getToken(messaging,{vapidKey:state.settings.pushVapidKey,serviceWorkerRegistration:reg});
+  if(token){
+   const authUser=window.SSEFirebase.user;
+   if(!authUser?.uid){alert('Push token बना, लेकिन Firebase SDK login UID उपलब्ध नहीं है। दोबारा login करें और फिर Enable Push दबाएँ।');return;}
+   await window.SSEFirebase.setDoc(window.SSEFirebase.doc(window.SSEFirebase.db,'pushTokens',authUser.uid),{uid:authUser.uid,name:state.user?.name||'',role:state.user?.role||'member',token,updatedAt:new Date().toISOString()},{merge:true});
+   state.settings.pushEnabled=true;state.settings.pushTokenRegistered=true;save();alert('इस डिवाइस का Push token सुरक्षित सेव हुआ। ऐप बंद होने पर Push भेजने के लिए functions/ वाला sender Firebase पर deploy करना होगा।');
+  }
+  onMessage(messaging,payload=>{const n=payload?.notification||{};if(n.title&&Notification.permission==='granted')new Notification(n.title,{body:n.body||'SSE Reporting App में नया अपडेट है।'});});
+ }catch(e){console.error('Push setup failed',e);alert('Push setup पूरा नहीं हुआ: '+(e.message||'Firebase configuration जाँचें।'));}
+}
+function assignSystems(){
+ const items=[
+  {id:'workPermit',name:uiLabel('workPermit','Work Permit')},
+  {id:'permitTypes',name:'Permit Types'},
+  {id:'checklist',name:'Checklist'},
+  {id:'report',name:uiLabel('dailyReport','Daily Work Report')},
+  {id:'attendance',name:uiLabel('attendance','Attendance')},
+  {id:'material',name:uiLabel('material','Material Request')},
+  {id:'tbt',name:uiLabel('tbt','TBT Photo')}
+ ];
+ customMenus().forEach(m=>(m.items||[]).forEach((name,i)=>items.push({id:'custom_'+m.id+'_'+i,name}))); 
+ return items;
+}
+function managerAssign(siteId=''){
+ const sites=state.sites||[];
+ const selected=sites.find(s=>s.id===siteId);
+ if(!selected && siteId!=='all'){
+  shell(`<main class="wrap">${nav('assign')}<div class="card"><div class="section-head"><div><h2>✅ Assign Systems</h2><div class="muted">पहले All Sites खोलें या किसी साइट को चुनें।</div></div><span class="badge">${sites.length} Sites</span></div><button class="btn primary" style="width:100%;margin:12px 0" onclick="managerAssign('all')">📍 All Sites</button><div class="list">${sites.map(s=>`<button class="item" style="width:100%;text-align:left;cursor:pointer" onclick="managerAssign('${esc(s.id)}')"><b>📍 ${esc(s.name)}</b><div class="muted">साइट/काम असाइन करें; Work Report के लिए Daily Work Report चुनें</div></button>`).join('')||'<div class="empty">अभी कोई साइट नहीं है। पहले Site & Tower Setup में साइट जोड़ें।</div>'}</div></div></main>`);return;
+ }
+ if(siteId==='all'){
+  shell(`<main class="wrap">${nav('assign')}<div class="card"><div class="section-head"><div><h2>📍 All Sites — Assign</h2><div class="muted">किसी साइट को चुनकर उसके सिस्टम और मेंबर असाइन करें।</div></div></div><div class="list">${sites.map(s=>`<button class="item" style="width:100%;text-align:left" onclick="managerAssign('${esc(s.id)}')"><b>📍 ${esc(s.name)}</b><span class="muted"> खोलें →</span></button>`).join('')||'<div class="empty">कोई साइट नहीं मिली।</div>'}</div></div></main>`);return;
+ }
+ state.settings.assignments=state.settings.assignments||{};
+ const systems=assignSystems(); const siteAssign=state.settings.assignments[selected.id]||{};
+ const members=(state.members||[]); // Keep every member selectable; system assignment itself grants site access.
+ shell(`<main class="wrap">${nav('assign')}<div class="card"><button class="btn" onclick="managerAssign()">← All Sites</button><div class="section-head" style="margin-top:12px"><div><h2>✅ ${esc(selected.name)} — Assign</h2><div class="muted">हर सिस्टम के सामने Assign टिक करें और Team Member चुनें। Daily Work Report टिक करने पर उस सदस्य को यह Site रिपोर्ट के लिए दिखेगी।</div></div></div><div class="list">${systems.map((sys,i)=>{const a=siteAssign[sys.id]||{enabled:false,memberIds:[]};return `<div class="item"><div class="row" style="align-items:center"><div style="flex:1;min-width:0"><b>${esc(sys.name)}</b><div class="muted" style="font-size:12px">Assign to team member(s)</div></div><label class="permit-check" style="padding:8px 10px;white-space:nowrap"><input type="checkbox" id="as_on_${i}" ${a.enabled?'checked':''}> Assign</label></div><div style="margin-top:10px"><label>Team Members</label><div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">${members.map(m=>`<label class="permit-check"><input type="checkbox" class="as_member_${i}" value="${esc(m.id)}" ${(a.memberIds||[]).includes(m.id)?'checked':''}> ${esc(m.name)}</label>`).join('')||'<span class="muted">इस साइट के लिए कोई मेंबर नहीं मिला। Team में साइट access दें।</span>'}</div></div></div>`}).join('')}</div><button class="btn primary" style="width:100%;margin-top:14px" onclick="saveSiteAssignments('${esc(selected.id)}',${systems.length})">💾 Save Assignments</button></div></main>`);
+}
+async function saveSiteAssignments(siteId,count){
+ const btn=document.querySelector('button[onclick^="saveSiteAssignments"]');
+ if(btn){btn.disabled=true;btn.textContent='⏳ SAVING…';}
+ window.__sseSavingSiteId=siteId;
+ const systems=assignSystems();state.settings.assignments=state.settings.assignments||{};const out={};
+ systems.forEach((sys,i)=>{const enabled=$('#as_on_'+i)?.checked||false;const memberIds=[...document.querySelectorAll('.as_member_'+i+':checked')].map(x=>x.value);out[sys.id]={enabled,memberIds};});
+ const previous=JSON.parse(JSON.stringify(state.settings.assignments[siteId]||{}));
+ state.settings.assignments[siteId]=out;
+ // V52: Daily Work Report assignment also grants the member access to this site in their report form.
+ const reportAssignment=out.report||{};
+ const reportMemberIds=(reportAssignment.enabled && Array.isArray(reportAssignment.memberIds))?reportAssignment.memberIds:[];
+ (state.members||[]).forEach(m=>{
+   m.assignedSites=Array.isArray(m.assignedSites)?m.assignedSites:[];
+   if(reportMemberIds.includes(m.id)){
+     if(!m.assignedSites.includes(siteId))m.assignedSites.push(siteId);
+   }else{
+     // Only remove access here if this site is no longer assigned through any enabled system.
+     const assignedElsewhere=Object.values(out).some(a=>a&&a.enabled&&(a.memberIds||[]).includes(m.id));
+     if(!assignedElsewhere)m.assignedSites=m.assignedSites.filter(id=>id!==siteId);
+   }
+ });
+ localStorage.setItem(KEY,JSON.stringify(state));
+ try{
+   await saveAssignmentsToCloudNow();
+   const assignedNames=[...new Set(Object.values(out).filter(x=>x.enabled).flatMap(x=>x.memberIds||[]).map(id=>(state.members||[]).find(m=>m.id===id)?.name).filter(Boolean))];
+   queueEvent({type:'assignment',title:'नया Assignment मिला',body:'Manager ने इस साइट के सिस्टम/काम असाइन किए हैं।',siteId,siteName:(state.sites||[]).find(x=>x.id===siteId)?.name||'',toRole:'team',toNames:assignedNames});
+   toast('✅ DONE — Assignments saved to cloud');
+   managerAssign(siteId);
+   const msg=document.createElement('div');msg.className='notice';msg.style.cssText='border-color:#198754;background:#e9f8ef;color:#176b37;font-weight:800';msg.textContent='✅ DONE — Assignment cloud में सेव हो गया। Team Member ऐप sync होने पर इसे देख सकेगा।';
+   const card=document.querySelector('main.wrap .card');if(card)card.insertBefore(msg,card.firstChild);
+ }catch(err){
+   state.settings.assignments[siteId]=previous;localStorage.setItem(KEY,JSON.stringify(state));
+   if(btn){btn.disabled=false;btn.textContent='❌ FAILED — Retry Save';}
+   const msg=document.createElement('div');msg.className='notice';msg.style.cssText='border-color:#dc3545;background:#fff0f0;color:#a12626;font-weight:800';msg.textContent='❌ FAILED — Cloud में सेव नहीं हुआ। '+(err?.message||'कनेक्शन/लॉगिन जाँचें।')+' आपके चुने हुए टिक स्क्रीन पर बने रहेंगे; फिर Retry Save दबाएँ।';
+   const card=document.querySelector('main.wrap .card');if(card)card.insertBefore(msg,card.firstChild);
+   toast('❌ FAILED — Assignments cloud में सेव नहीं हुए');
+ }
+}
+async function saveAssignmentsToCloudNow(){
+ if(window.SSEFirebase?.ready && window.SSEFirebase.user){
+   const ref=window.SSEFirebase.doc(window.SSEFirebase.db,'appData','main');
+   const snap=await window.SSEFirebase.getDoc(ref);
+   const remote=snap.exists()?(snap.data()||{}):{};
+   const payload=mergeIncomingSubmissions(cloudPayload(),remote);payload.user=null;delete payload.authSession;
+   await window.SSEFirebase.setDoc(ref,payload,{merge:false});
+   const verify=await window.SSEFirebase.getDoc(ref);
+   if(!verify.exists() || JSON.stringify(verify.data()?.settings?.assignments?.[Object.keys(state.settings.assignments||{}).slice(-1)[0]])===undefined) { /* read-back is performed below by site key */ }
+   const check=verify.data()?.settings?.assignments;
+   if(!check || !check[window.__sseSavingSiteId]) throw new Error('Cloud save की पुष्टि नहीं मिली।');
+   return true;
+ }
+ const token=state.authSession?.idToken;
+ if(!token || state.user?.role!=='manager')throw new Error('Manager login / Firebase session नहीं मिला।');
+ let payload=cloudPayload();
+ const remote=await cloudRestGet();
+ if(remote)payload=mergeIncomingSubmissions(payload,remote);
+ payload.user=null;delete payload.authSession;
+ const body={fields:{}};Object.entries(payload).forEach(([k,v])=>body.fields[k]=firestoreValue(v));
+ const r=await fetch(FIRESTORE_DOC_URL,{method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+ if(!r.ok)throw new Error('Firebase ने सेव अस्वीकार किया (HTTP '+r.status+').');
+ const verify=await cloudRestGet();
+ if(!verify?.settings?.assignments?.[window.__sseSavingSiteId])throw new Error('Cloud में सेव की पुष्टि नहीं मिली।');
+ return true;
+}
+function managerPage(p){
+if(p==='assign') return managerAssign();
+if(p==='requests') return managerRequests();
+if(p==='permitCheck') return managerPermitCheck();
+if(p==='dailyHistory') return dailyHistory();
+if(p==='attendanceList') return managerAttendanceList();
+if(p==='materialList') return managerMaterialList();
+if(p==='reports') return managerReports();
+if(p==='team') return managerTeam();
+if(p==='teamList') return managerTeamList();
+if(p==='sites') return managerSites();
+if(p==='allSites') return managerAllSites();
+const todayAtt=state.attendance.filter(x=>x.date===today());
+const present=state.members.map(m=>{const a=todayAtt.find(x=>x.name===m.name);return {name:m.name,a}});
+const presentCount=todayAtt.filter(x=>x.status==='Present').length;
+const pendingRequests=state.requests.filter(x=>x.status==='Pending');
+const completedReports=state.reports.filter(x=>x.date===today() && String(x.completed||'').trim());
+const pendingWork=state.reports.filter(x=>x.date===today() && String(x.pending||'').trim());
+const totalReportsToday=state.reports.filter(x=>x.date===today()).length;
+const pct=(completedReports.length+pendingWork.length)?Math.round(completedReports.length/(completedReports.length+pendingWork.length)*100):0;
+shell(`<main class="wrap">${nav('dashboard')}
+<div class="dash-hero"><div><h2>Manager Dashboard</h2><p>Silver Star Enterprises • Site operations overview</p></div><div class="dash-date">${new Date().toLocaleDateString([], {weekday:'short',day:'2-digit',month:'short',year:'numeric'})}</div></div>
+<div class="dashboard-kpi-wrap"><div class="dashboard-kpi-title"><b>Today's Overview</b><span>Live summary</span></div><div class="v20-kpi-row"><div class="v20-kpi"><div class="kpi-icon">📋</div><span>Reports Today</span><b>${totalReportsToday}</b><small class="kpi-sub">Daily work updates</small></div><div class="v20-kpi"><div class="kpi-icon">⏳</div><span>Pending Requests</span><b>${pendingRequests.length}</b><small class="kpi-sub">Needs manager action</small></div><div class="v20-kpi"><div class="kpi-icon">📈</div><span>Overall Progress</span><b>${pct}%</b><small class="kpi-sub">Current completion</small></div></div></div>
+<div class="dashboard-modules-top">
+  <div class="module-top-title">✨ AI Module Dashboard <span style="margin-left:auto;font-size:10px;background:#eaf0ff;color:#334b9b;border:1px solid #d7e1ff;padding:4px 8px;border-radius:999px">V59 • AI UI</span></div>
+  <div class="module-choice-grid">${dashboardCards().map((c,ci)=>({c,ci})).filter(x=>x.c.enabled!==false && !dashboardModuleDisabled(x.c.id)).map(({c,ci})=>{const counts={material:(state.requests||[]).length,workPermit:(state.moduleRecords?.workPermit||[]).length,tbt:(state.moduleRecords?.tbt||[]).length,attendance:(state.attendance||[]).length,reports:(state.reports||[]).length,team:(state.members||[]).length};const n=counts[c.id];return `<button class="module-choice" data-dashboard-index="${ci}" onclick="page('${c.route}')">${c.image?`<img class="module-thumb" src="${c.image}" alt="thumbnail">`:`<div class="module-icon">${esc(c.icon||'📌')}</div>`}<b>${esc(c.title)}</b><span>${esc(c.subtitle||'')}</span>${n!==undefined?`<small class="module-live-count">${n} ${n===1?'record':'records'}</small>`:''}</button>`}).join('')}</div>
+</div>
+
+<div class="dash-grid">
+ <div class="dash-card" onclick="page('workPermit')"><div class="icon">📋</div><div class="label">WORK PERMIT / TVTO</div><div class="big">${(state.moduleRecords?.workPermit||[]).length}</div><div class="hint">Tap to see what team members submitted</div></div>
+ <div class="dash-card" onclick="page('tbt')"><div class="icon">📸</div><div class="label">TBT PHOTOS</div><div class="big">${(state.moduleRecords?.tbt||[]).length}</div><div class="hint">Submitted TBT photos</div></div>
+ <div class="dash-card team-total-card" onclick="page('teamList')" role="button" tabindex="0" aria-label="View total team members"><div class="icon">👥</div><div class="label">TOTAL TEAM</div><div class="big">${state.members.length}</div><div class="team-total-sub">${state.members.length===1?'Member':'Members'}</div><div class="hint">Tap to view all names</div></div>
+ <div class="dash-card" onclick="page('reports')"><div class="icon">🏗️</div><div class="label">WORK REPORTS</div><div class="big">${totalReportsToday}</div><div class="hint">Today's submitted reports</div></div>
+ <div class="dash-card" onclick="page('allSites')"><div class="icon">📍</div><div class="label">ALL SITE</div><div class="big">${allSiteNames().length}</div><div class="hint">Manage & view all sites</div></div>
+</div>
+<div class="section-card" onclick="page('attendanceList')" style="cursor:pointer"><div class="section-head"><h2>👥 Team Member Attendance</h2><span class="badge approved">View Full List →</span></div>
+ <div class="team-row" style="font-weight:800;color:var(--muted);font-size:12px"><div>TEAM MEMBER</div><div>STATUS</div><div>SITE</div><div>TIME</div></div>
+ ${present.map(({name,a})=>`<div class="team-row"><div><b>${esc(name)}</b></div><div><span class="badge ${a?.status==='Present'?'approved':'rejected'}">${a?.status||'Not Marked'}</span></div><div>${a?.siteName?esc(a.siteName):'<span class="muted">—</span>'}</div><div>${a?.location?new Date(a.location.capturedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):'<span class="muted">—</span>'}</div></div>`).join('')||'<div class="empty">No team members added yet.</div>'}
+ ${todayAtt.filter(a=>!state.members.some(m=>m.name===a.name)).map(a=>`<div class="team-row"><div><b>${esc(a.name)}</b></div><div><span class="badge approved">${esc(a.status)}</span></div><div>${esc(a.siteName||'—')}</div><div>${a.location?new Date(a.location.capturedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):'—'}</div></div>`).join('')}
+</div>
+<div class="section-card" onclick="page('materialList')" style="cursor:pointer"><div class="section-head"><h2>📦 Material Required</h2><span class="badge pending">View Requests →</span></div>
+ <div class="mini-grid">${pendingRequests.slice().reverse().slice(0,8).map(x=>`<div class="mini-item"><div class="row"><b>${esc(x.material||'Material')}</b><span class="badge pending">Pending</span></div><div class="muted" style="margin-top:5px">Site: ${esc(requestSiteName(x))} • By: ${esc(x.name||'—')}</div><div style="margin-top:7px;font-size:18px"><b>${esc(x.quantity)} ${esc(x.unit)}</b></div>${x.towerName?`<div class="muted">Tower: ${esc(x.towerName)}${x.floor?' • Floor: '+esc(x.floor):''}</div>`:''}</div>`).join('')||'<div class="empty">No pending material requests.</div>'}</div>
+</div>
+<div class="section-card" onclick="page('permitCheck')" style="cursor:pointer">
+<div class="section-head"><div><h2>📋 Work Permit / TVTO — Latest Submissions</h2><div class="muted">Manager dashboard पर team ने जो permit details डाली हैं, वही यहाँ दिखेंगी।</div></div><span class="badge approved">${(state.moduleRecords?.workPermit||[]).length} Total</span></div>
+<div class="list">
+${(state.moduleRecords?.workPermit||[]).slice().reverse().slice(0,8).map(r=>`<div class="item">
+  <div class="row"><b>${esc(r.permitType||'Work Permit')}</b>${permitStatusBadge(r.status||'Pending')}</div><div class="muted" style="margin-top:3px">${esc(r.date||'')}</div>
+  <div style="margin-top:6px"><b>📍 Location:</b> ${esc(r.workLocation||r.site||'—')} &nbsp; • &nbsp; <b>🏢 Tower:</b> ${esc(r.towerName||'—')}</div>
+  <div class="muted" style="margin-top:5px"><b>📌 Area:</b> ${esc(r.areaLocation||'—')} • Labour: ${(r.labour||[]).length}</div>
+  <div style="margin-top:7px"><b>Labour:</b> ${(r.labour||[]).map(x=>esc(x)).join(', ')||'—'}</div>
+  ${r.notes?`<div style="margin-top:6px">${esc(r.notes)}</div>`:''}
+  ${r.photo?`<img class="permit-photo" src="${r.photo}" alt="Permit photo">`:''}
+</div>`).join('')||'<div class="empty">अभी कोई Work Permit / TVTO submission नहीं आया है।</div>'}
+</div>
+</div>
+<div class="section-card module-panel">
+<div class="section-head"><div><h2>📋 Site Forms & Access Control</h2><div class="muted">Separate modules — Manager controls who can see each record.</div></div><span class="badge approved">Manager Control</span></div>
+<div class="module-dashboard-grid">
+${!dashboardModuleDisabled('material')?`<button class="module-dashboard-card material" onclick="page('materialList')"><span>📦</span><b>${uiLabel('material','Material Request')}</b><small>View material records</small></button>`:''}
+${!dashboardModuleDisabled('tbt')?`<button class="module-dashboard-card tbt" onclick="page('tbt')"><span>🦺</span><b>${uiLabel('tbt','TBT Photo')}</b><small>Open separate TBT module</small></button>`:''}
+${!dashboardModuleDisabled('workPermit')?`<button class="module-dashboard-card permit" onclick="page('permitCheck')"><span>📋</span><b>${uiLabel('workPermit','Work Permit')}</b><small>View & Approve Team Permits</small></button>`:''}
+${!dashboardModuleDisabled('attendance')?`<button class="module-dashboard-card attendance" onclick="page('attendanceList')"><span>🕘</span><b>${uiLabel('attendance','Attendance')}</b><small>View team attendance</small></button>`:''}
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+<button class="btn primary" style="width:100%" onclick="page('visibility')">⚙️ Open Admin Visibility Control</button>
+<button class="btn" style="width:100%;border:2px solid var(--accent,#2563eb);font-weight:800" onclick="page('dashboardEditor')">✏️ Dashboard Edit</button>
+</div>
+</div>
+<div class="section-card"><div class="section-head"><h2>🏗️ Work Progress</h2><span class="badge">${pct}% Completed</span></div>
+ <div class="mini-grid"><div class="mini-item"><div class="label">COMPLETED WORK</div><div class="big">${completedReports.length}</div><div class="progress"><span style="width:${pct}%"></span></div></div><div class="mini-item"><div class="label">PENDING WORK</div><div class="big">${pendingWork.length}</div><div class="muted">Reports with pending work</div></div></div>
+ <div class="list" style="margin-top:12px">${state.reports.filter(x=>x.date===today()).slice().reverse().slice(0,6).map(r=>`<div class="item"><div class="row"><b>${esc(r.name)}</b><span class="badge">${esc(r.date)}</span></div>${r.towerName?`<div class="muted">Tower: ${esc(r.towerName)}${r.floor?' • Floor: '+esc(r.floor):''}</div>`:''}<div style="margin-top:6px"><b>Completed:</b> ${esc(r.completed||'—')}</div><div><b>Pending:</b> ${esc(r.pending||'—')}</div></div>`).join('')||'<div class="empty">No work reports today.</div>'}</div>
+</div>
+${!dashboardModuleDisabled('activity')?`<div class="section-card"><div class="section-head"><h2>⚡ Latest Activity</h2></div><div class="list">${state.requests.slice(-4).reverse().map(requestCard).join('')||'<div class="empty">No recent requests.</div>'}</div></div>`:''}
+</main>`);
+}
+function requestCard(x){
+return `<div class="item"><div class="row"><b>${esc(x.type)} — ${esc(x.material||x.title||'')}</b><span class="badge ${x.status.toLowerCase()}">${esc(x.status)}</span></div><div class="muted"><b>Requester / Site:</b> ${esc(requestSiteName(x))} • <b>By:</b> ${esc(x.name||'—')} • ${esc(x.date)}</div>${x.towerName?`<div>Tower: <b>${esc(x.towerName)}</b> ${x.floor?`• Floor: <b>${esc(x.floor)}</b>`:''}</div>`:''}${x.quantity?`<div>Quantity: <b>${esc(x.quantity)} ${esc(x.unit)}</b></div>`:''}<div style="margin-top:6px">${esc(x.note||x.issue||'')}</div>${state.user?.role==='manager'&&x.status==='Pending'?`<div class="actions" style="margin-top:10px"><button class="btn success" onclick="setRequest('${x.id}','Approved')">Approve</button><button class="btn danger" onclick="setRequest('${x.id}','Rejected')">Reject</button></div>`:''}</div>`;
+}
+function setRequest(id,status){const x=state.requests.find(r=>r.id===id);if(!x)return;startProcessing(status==='Approved'?'Approving request…':'Updating request…','Saving request status');x.status=status;save();managerRequests();finishProcessing(true)}
+function permitStatusBadge(status){const s=status||'Pending';return `<span class="badge ${s.toLowerCase()}">${esc(s)}</span>`}
+function reviewPermit(id,status){
+  const r=(state.moduleRecords?.workPermit||[]).find(x=>x.id===id); if(!r)return;
+  let remark=prompt(status==='Approved'?'Approval remark (optional):':'Rejection reason / remark:','');
+  if(status==='Rejected' && remark===null)return;
+  r.status=status; r.reviewedBy=state.user?.name||'Manager'; r.reviewedAt=new Date().toISOString(); r.reviewRemark=(remark||'').trim();
+  save(); toast(`Permit ${status.toLowerCase()} successfully`); managerPermitCheck();
+}
+function permitRecordCard(r,manager=false){
+ return `<div class="item permit-record">
+  <div class="row"><b>${esc(r.permitType||'Work Permit')}</b>${permitStatusBadge(r.status)}</div>
+  <div class="muted"><b>By:</b> ${esc(r.user||'—')} • <b>Date:</b> ${esc(r.date||'—')}</div>
+  <div><b>📍 Location:</b> ${esc(r.workLocation||r.site||'—')} • <b>🏢 Tower:</b> ${esc(r.towerName||'—')}</div>
+  <div><b>📌 Area:</b> ${esc(r.areaLocation||'—')}</div>
+  <div style="margin-top:6px"><b>👷 Labour:</b> ${(r.labour||[]).map(x=>esc(x)).join(', ')||'—'}</div>
+  ${r.notes?`<div style="margin-top:6px">${esc(r.notes)}</div>`:''}
+  ${r.photo?`<img class="permit-photo" src="${r.photo}" alt="Permit photo">`:''}
+  ${r.reviewedBy?`<div class="review-box"><b>Manager:</b> ${esc(r.reviewedBy)} • ${r.reviewedAt?new Date(r.reviewedAt).toLocaleString():''}${r.reviewRemark?`<br><b>Remark:</b> ${esc(r.reviewRemark)}`:''}</div>`:''}
+  ${manager&&r.status==='Pending'?`<div class="actions" style="margin-top:10px"><button class="btn success" onclick="reviewPermit('${r.id}','Approved')">✓ Approve Permit</button><button class="btn danger" onclick="reviewPermit('${r.id}','Rejected')">✕ Reject Permit</button></div>`:''}
+ </div>`;
+}
+function managerPermitCheck(){
+ const rows=(state.moduleRecords?.workPermit||[]).slice().reverse(); const pending=rows.filter(r=>(r.status||'Pending')==='Pending');
+ shell(`<main class="wrap">${nav('permitCheck')}<div class="card">
+  <div class="section-head"><div><h2>📋 Permit Check</h2><div class="muted">Team Member के submitted Work Permits को Manager यहाँ review करेगा।</div></div><span class="badge pending">${pending.length} Pending</span></div>
+  <div class="notice"><b>Workflow:</b> Team Member Submit → Pending → Manager Check → Approve / Reject → Daily History.</div>
+  <div class="list">${rows.map(r=>permitRecordCard(r,true)).join('')||'<div class="empty">No work permits submitted yet.</div>'}</div>
+ </div></main>`)
+}
+function dailyHistory(){
+ const isManager=state.user?.role==='manager';
+ const day=window._historyDate||today();
+ const reports=state.reports.filter(r=>r.date===day && (isManager||r.name===state.user.name));
+ const permits=(state.moduleRecords?.workPermit||[]).filter(r=>r.date===day && (isManager||r.user===state.user.name));
+ const attendance=state.attendance.filter(r=>r.date===day && (isManager||r.name===state.user.name));
+ const requests=state.requests.filter(r=>r.date===day && (isManager||r.name===state.user.name));
+ const events=[...reports.map(r=>({kind:'Daily Report',name:r.name,time:r.createdAt||r.date,status:'Submitted',body:r.work||'Daily work report'})),...permits.map(r=>({kind:'Work Permit',name:r.user,time:r.createdAt||r.date,status:r.status||'Pending',body:`${r.permitType||'Permit'} • ${r.workLocation||r.site||''} • ${r.towerName||''}`})),...attendance.map(r=>({kind:'Attendance',name:r.name,time:r.location?.capturedAt||r.date,status:r.status||'Submitted',body:r.siteName||'Attendance submitted'})),...requests.map(r=>({kind:r.type||'Request',name:r.name,time:r.createdAt||r.date,status:r.status||'Pending',body:r.material||r.title||r.note||''}))].sort((a,b)=>String(b.time).localeCompare(String(a.time)));
+ shell(`<main class="wrap">${nav('dailyHistory')}<div class="card">
+  <div class="section-head"><div><h2>📅 Daily History</h2><div class="muted">${isManager?'पूरी team activity':'आपकी daily activity'} — date wise audit trail</div></div><span class="badge approved">${events.length} Events</span></div>
+  <div class="history-filter"><label>Date<input id="historyDate" type="date" value="${day}" onchange="window._historyDate=this.value;dailyHistory()"></label></div>
+  <div class="list">${events.map(e=>`<div class="item"><div class="row"><b>${esc(e.kind)} • ${esc(e.name||'—')}</b>${permitStatusBadge(e.status)}</div><div class="muted">${esc(e.time||day)}</div><div style="margin-top:6px">${esc(e.body)}</div></div>`).join('')||'<div class="empty">इस तारीख के लिए कोई activity नहीं मिली।</div>'}</div>
+ </div></main>`)
+}
+
+function managerRequests(){shell(`<main class="wrap">${nav('requests')}<div class="card"><h2>Manager Requests</h2><div class="list">${state.requests.slice().reverse().map(requestCard).join('')||'<p class="muted">No requests yet.</p>'}</div></div></main>`)}
+function managerAttendanceList(){const rows=state.attendance.slice().reverse();shell(`<main class="wrap">${nav('dashboard')}<div class="card"><div class="section-head"><div><h2>📍 Attendance List</h2><div class="muted">All submitted team attendance</div></div><span class="badge approved">${rows.length} Records</span></div><div class="list">${rows.map(a=>`<div class="item"><div class="row"><b>${esc(a.name)}</b><span class="badge approved">${esc(a.status||'Present')}</span></div><div><b>Site:</b> ${esc(a.siteName||'—')}</div><div><b>Date:</b> ${esc(a.date||'—')}</div>${a.location?`<div><b>Location:</b> ${esc(a.location.lat)}, ${esc(a.location.lon)}</div><div><b>Captured:</b> ${new Date(a.location.capturedAt).toLocaleString()}</div>`:''}${a.photo?`<img class="photo-preview" src="${a.photo}" style="max-width:320px;margin-top:10px">`:''}</div>`).join('')||'<div class="empty">No attendance submitted yet.</div>'}</div></div></main>`)}
+function managerMaterialList(){const rows=state.requests.filter(x=>x.type==='Material Request').slice().reverse();shell(`<main class="wrap">${nav('requests')}<div class="card"><div class="section-head"><div><h2>📦 Material Requests</h2><div class="muted">Material required by team members</div></div><span class="badge pending">${rows.filter(x=>x.status==='Pending').length} Pending</span></div><div class="list">${rows.map(requestCard).join('')||'<div class="empty">No material requests yet.</div>'}</div></div></main>`)}
+function managerReports(){shell(`<main class="wrap">${nav('reports')}<div class="card"><h2>Daily Reports</h2><div class="list">${state.reports.slice().reverse().map(r=>`<div class="item"><b>${esc(r.name)} • ${esc(r.date)}</b>${r.siteId?`<div>Site: <b>${esc(r.siteName||(state.sites||[]).find(s=>String(s.id)===String(r.siteId))?.name||'—')}</b>${r.towerName?` • Tower: <b>${esc(r.towerName)}</b>`:''}${r.floor?` • Floor: <b>${esc(r.floor)}</b>`:''}</div>`:''}<div>Completed: ${esc(r.completed)}</div><div>Pending: ${esc(r.pending)}</div><div>${esc(r.work)}</div>${r.photo?`<img class="photo-preview" src="${r.photo}">`:''}</div>`).join('')||'<p class="muted">No reports yet.</p>'}</div></div></main>`)}
+function managerTeamList(){
+ const members=state.members||[];
+ shell(`<main class="wrap">${nav('team')}
+ <div class="card">
+  <div class="section-head">
+   <div>
+    <h2>👥 Total Team</h2>
+    <div class="muted">All registered team members</div>
+   </div>
+   <span class="badge approved">${members.length} ${members.length===1?'Member':'Members'}</span>
+  </div>
+  <div class="team-count-box">
+   <div class="label">TOTAL TEAM</div>
+   <div class="big">${members.length}</div>
+   <div class="muted">${members.length===1?'team member':'team members'} registered</div>
+  </div>
+  <div class="list team-name-list">
+   ${members.map((m,i)=>`<div class="item team-name-item">
+      <div class="team-name-line">
+       <span class="team-number">${i+1}</span>
+       <div><b>${esc(m.name)}</b><div class="muted" style="font-size:12px;margin-top:3px">${esc(m.email||'Login email not set')} • ${(m.assignedSites||[]).length} Site(s) assigned</div></div>
+      </div>
+      <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap"><span class="badge">${(m.assignedSites||[]).length} Site(s)</span><button class="btn" onclick="editMember('${esc(m.id)}')">✏️ Edit</button><button class="btn danger" onclick="deleteMember('${esc(m.id)}')">🗑️ Delete</button></div>
+    </div>`).join('')||'<div class="empty">No team members added yet.</div>'}
+  </div>
+  <div class="actions" style="margin-top:14px">
+   <button class="btn primary" onclick="addMember()">+ Add Team Member</button>
+   <button class="btn" onclick="page('dashboard')">← Back to Dashboard</button>
+  </div>
+ </div>
+ </main>`)
+}
+function managerVisibility(){
+  ensureVisibility();
+  const members=state.members||[];
+  const selectedId=window._selectedVisibilityMemberId || (members[0]?.id||'');
+  window._selectedVisibilityMemberId=selectedId;
+  const selected=members.find(m=>m.id===selectedId);
+  const siteRows=(state.sites||[]).map(site=>({site,assigned:(selected?.assignedSites||[]).includes(site.id),shown:siteVisibleForMember(selectedId,site.id)}));
+  shell(`<main class="wrap">${nav('visibility')}<div class="card">
+   <div class="section-head"><div><h2>⚙️ Visibility Control</h2><div class="muted">Manager सिर्फ क्या दिखाई दे, यह तय करता है। किसी module का access बंद नहीं होता।</div></div><span class="badge approved">SHOW / HIDE</span></div>
+   <label style="margin-top:14px">Select Team Member</label>
+   <select class="access-member-select" onchange="selectVisibilityMember(this.value)"><option value="">Select Team Member</option>${members.map(m=>`<option value="${esc(m.id)}" ${m.id===selectedId?'selected':''}>${esc(m.name)}</option>`).join('')}</select>
+   ${selected?`<div class="selected-member-banner"><div class="team-number">✓</div><div><b>${esc(selected.name)}</b><div class="muted">इस member के लिए module और site visibility सेट करें।</div></div></div>
+   <div class="notice"><b>🟢 SHOW</b> → module/site सामान्य UI में दिखाई देगा।<br><b>⚪ HIDE</b> → module/site सामान्य UI में दिखाई नहीं देगा।<br><b>महत्वपूर्ण:</b> यह केवल visibility है; data submission access बंद नहीं होता।</div>
+   <div class="actions" style="margin-top:12px"><button class="btn primary" onclick="page('masterSettings')">⚙️ Master Setup — Names / Permit / Material / Units / Site / Tower</button></div>
+   <h3 style="margin-top:18px">Modules</h3><div class="selected-access-list">${['workPermit','tbt','material','attendance'].map(mod=>`<div class="selected-access-row"><div><b>${moduleName(mod)}</b><small>${moduleVisibilityHint(mod)}</small></div><button class="access-toggle ${moduleVisibleById(selected.id,mod)?'on':'off'}" onclick="toggleVisibilityAndStay('${selected.id}','${mod}')">${moduleVisibleById(selected.id,mod)?'✓ SHOW':'○ HIDE'}</button></div>`).join('')}</div>
+   <h3 style="margin-top:22px">Sites</h3><div class="selected-access-list">${siteRows.map(({site,assigned,shown})=>`<div class="selected-access-row"><div><b>${esc(site.name)}</b><small>${assigned?'Assigned site':'Not assigned to this member'} • ${shown?'Visible':'Hidden'}</small></div><button class="access-toggle ${shown?'on':'off'}" onclick="toggleSiteVisibilityAndStay('${selected.id}','${site.id}')">${shown?'✓ SHOW':'○ HIDE'}</button></div>`).join('')||'<div class="empty">पहले Site add करें।</div>'}</div>`:`<div class="empty" style="margin-top:18px">पहले Team Member select करें।</div>`}
+  </div></main>`)
+}
+function selectVisibilityMember(memberId){window._selectedVisibilityMemberId=memberId;managerVisibility()}
+function toggleVisibilityAndStay(memberId,mod){ensureVisibility();startProcessing(moduleVisibleById(memberId,mod)?'Hiding module…':'Showing module…','Updating visibility');state.visibility[mod][memberId]=!moduleVisibleById(memberId,mod);save();window._selectedVisibilityMemberId=memberId;managerVisibility();finishProcessing(true)}
+function toggleSiteVisibilityAndStay(memberId,siteId){ensureVisibility();const wasVisible=siteVisibleForMember(memberId,siteId);startProcessing(wasVisible?'Hiding site…':'Showing site…','Updating site visibility');if(!state.siteVisibility[memberId])state.siteVisibility[memberId]={};state.siteVisibility[memberId][siteId]=!wasVisible;save();window._selectedVisibilityMemberId=memberId;managerVisibility();finishProcessing(true)}
+function moduleVisibilityHint(mod){return ({workPermit:'Work Permit form और module button',tbt:'TBT photo module और button',material:'Material Request button/selection',attendance:'Attendance button/module'})[mod]||'Module visibility'}
+function moduleVisibleById(memberId,mod){ensureVisibility();if(dashboardModuleDisabled(mod))return false;return state.visibility[mod]?.[memberId]!==false}
+function currentTeamMember(){
+  const u=state.user||{};
+  const email=String(u.email||'').trim().toLowerCase();
+  const name=String(u.name||'').trim().toLowerCase();
+  const members=state.members||[];
+  // Prefer the permanent Firebase email/uid identity. Fall back to the old
+  // name-based records so existing team members keep working.
+  return members.find(m=>String(m.email||'').trim().toLowerCase()===email)
+    || members.find(m=>m.uid && u.uid && m.uid===u.uid)
+    || members.find(m=>String(m.name||'').trim().toLowerCase()===name)
+    || members.find(m=>email && String(email.split('@')[0]).trim().toLowerCase()===String(m.name||'').trim().toLowerCase())
+    || null;
+}
+function moduleVisibleForCurrentUser(mod){const m=currentTeamMember();return !m||moduleVisibleById(m.id,mod)}
+function siteVisibleForMember(memberId,siteId){ensureVisibility();return state.siteVisibility[memberId]?.[siteId]!==false}
+function hasModuleAccessById(memberId,mod){return true}
+function hasModuleAccess(mod,name){return true}
+function accessDenied(module){return moduleFormPage(module==='TBT Photo'?'tbt':'workPermit')}
+function toggleAccess(memberId,mod){toggleVisibilityAndStay(memberId,mod)}
+function saveModuleRecord(type){
+  const user=state.user||{};
+  const site=(document.getElementById(type+'Site')||{}).value||'';
+  const siteObj=(state.sites||[]).find(s=>s.id===site);
+  const siteName=siteObj?.name||site;
+  const date=(document.getElementById(type+'Date')||{}).value||today();
+  const notes=(document.getElementById(type+'Notes')||{}).value||'';
+  const photoInput=document.getElementById(type+'Photo') || document.getElementById('workPermitPhoto');
+  const photo=photoInput && photoInput.files && photoInput.files[0] ? photoInput.files[0] : null;
+  if(!state.moduleRecords) state.moduleRecords={tbt:[],workPermit:[]};
+  if(!state.moduleRecords[type]) state.moduleRecords[type]=[];
+  let permitType='', permitBy='', floor='', labour=[], towerName='', areaLocation='', workLocation='';
+  if(type==='workPermit'){
+    const selectedPermitTypes=[...document.querySelectorAll('.permit-type-check:checked')].map(x=>x.value).filter(Boolean);
+    permitType=selectedPermitTypes.join(', ');
+    workLocation=(document.getElementById('workPermitLocation')||{}).value?.trim()||'';
+    towerName=(document.getElementById('workPermitTowerName')||{}).value?.trim()||'';
+    areaLocation=(document.getElementById('workPermitArea')||{}).value?.trim()||'';
+    labour=[...document.querySelectorAll('.labour-name')].map(x=>x.value.trim()).filter(Boolean);
+    if(!permitType)return alert('कम से कम एक Permit पर ✓ लगाएँ।');
+    if(!workLocation)return alert('Location जरूरी है।');
+    if(!towerName)return alert('Tower Name जरूरी है।');
+    if(!areaLocation)return alert('Area Location जरूरी है।');
+    if(!labour.length)return alert('कम से कम 1 Labour का नाम डालना जरूरी है।');
+  }
+  const saveRecord=async(photoData)=>{
+    const record={
+      id:crypto.randomUUID(), type, user:user.name||'User', name:user.name||'User', date, site:siteName, siteName, siteId:site, towerName, areaLocation, workLocation, notes,
+      permitType, permitBy, floor, labour, photo:photoData||'', createdAt:new Date().toISOString(),
+      status:type==='workPermit'?'Pending':'Approved', reviewedBy:'', reviewedAt:'', reviewRemark:''
+    };
+    state.moduleRecords[type].push(record);
+    save();
+    if(state.user?.role!=='manager'){const cloudOk=await cloudRestAppendArray('moduleRecords.'+type,record);if(!cloudOk){state.moduleRecords[type]=state.moduleRecords[type].filter(x=>x.id!==record.id);localStorage.setItem(KEY,JSON.stringify(state));alert('Firebase में record save नहीं हुआ। Internet/login जाँचकर फिर कोशिश करें।');return;}}
+    queueEvent({type,title:type==='tbt'?'नई TBT Photo':'नया Work Permit',body:(permitType||notes||'नया रिकॉर्ड जमा हुआ').slice(0,140),siteId:site,siteName,toRole:'manager',recordId:record.id});
+    toast(type==='tbt'?'TBT Photo saved successfully.':'Work Permit saved successfully.');
+    page(type);
+  };
+  if(photo){
+    imageFileToDataUrl(photo,1280,.72).then(saveRecord).catch(err=>alert(err?.message||'Photo read नहीं हो पाई।'));
+  }else{
+    if(type==='tbt') return alert('TBT के लिए फोटो लगाना जरूरी है।');
+    saveRecord('');
+  }
+}
+function addLabourRow(){
+  const box=document.getElementById('labourList');
+  if(!box)return;
+  const n=box.querySelectorAll('.labour-row').length+1;
+  const row=document.createElement('div');
+  row.className='labour-row';
+  row.innerHTML=`<span class="labour-no">${n}</span><input class="labour-name" placeholder="Labour Name ${n}"><button type="button" class="btn danger" onclick="this.parentElement.remove();renumberLabour()">×</button>`;
+  box.appendChild(row);
+}
+function renumberLabour(){
+  document.querySelectorAll('#labourList .labour-row').forEach((r,i)=>{const n=r.querySelector('.labour-no');if(n)n.textContent=i+1});
+}
+function moduleFormPage(type){
+  const isTbt=type==='tbt';
+  const title=isTbt?'📸 TBT Photo':'📋 Work Permit';
+  const records=(state.moduleRecords?.[type]||[]).slice().reverse();
+  const sites=state.sites||[];
+  if(isTbt){
+    shell(`<main class="wrap">${nav(type)}
+      <div class="card">
+        <div class="section-head"><div><h2>📸 TBT Photo</h2><div class="muted">TBT के लिए सिर्फ फोटो upload करें।</div></div></div>
+        <div class="tbt-photo-only">
+          <label>Site</label>
+          <select id="tbtSite">${state.user.role==='manager'?siteOptions():assignedSiteOptions()}</select>
+          <label>Date</label><input id="tbtDate" type="date" value="${today()}">
+          <label>TBT Photo</label><input id="tbtPhoto" type="file" accept="image/*">
+          <label>Remark (Optional)</label><textarea id="tbtNotes" rows="3" placeholder="Optional"></textarea>
+        </div>
+        <div class="actions" style="margin-top:14px"><button class="btn primary" onclick="saveModuleRecord('tbt')">Save TBT Photo</button></div>
+      </div>
+      <div class="card"><div class="section-head"><h3>Previous TBT Photos</h3><span class="badge">${records.length}</span></div>
+        <div class="list">${records.map(r=>`<div class="item"><b>${esc(r.siteName||r.site||(state.sites||[]).find(s=>String(s.id)===String(r.siteId))?.name||'No Site')}</b><div class="muted">${esc(r.date)} · ${esc(r.user)}</div>${r.photo?`<img class="permit-photo" src="${r.photo}" alt="TBT photo">`:''}</div>`).join('')||'<div class="empty">No TBT photos yet.</div>'}</div>
+      </div>
+    </main>`);
+    return;
+  }
+  shell(`<main class="wrap">${nav('workPermit')}
+   <div class="card permit-form-card">
+    <div class="section-head"><div><h2>📋 Work Permit</h2><div class="muted">Simple permit entry — Location → Tower → Area → Photo → Labour</div></div><span class="badge approved">New Entry</span></div>
+    <label>${uiLabel('workPermit','Work Permit')} <span class="required">*</span></label>
+    <div class="permit-type-grid">${permitTypes().map(x=>`<label class="permit-check"><input type="checkbox" class="permit-type-check" value="${esc(x.name)}"><span>${esc(x.icon||'📋')} ${esc(x.name)}</span></label>`).join('')}</div>
+    <input id="permitType" type="hidden">
+    <div class="form-grid" style="margin-top:12px">
+      <label class="full">📍 Location <span class="required">*</span>
+        <input id="workPermitLocation" placeholder="e.g. Kandivali, Borivali, Andheri">
+        <span class="muted" style="font-size:12px">जिस जगह पर actual काम हो रहा है उसका नाम लिखें।</span>
+      </label>
+      <label>🏢 Tower Name <span class="required">*</span>
+        <input id="workPermitTowerName" placeholder="e.g. Tower A / Wing B">
+      </label>
+      <label>📌 Area Location <span class="required">*</span>
+        <input id="workPermitArea" placeholder="e.g. Ground Floor Lobby / Parking">
+      </label>
+      <label>Date
+        <input id="workPermitDate" type="date" value="${today()}">
+      </label>
+      <label class="full">📷 Permit Photo
+        <input id="workPermitPhoto" type="file" accept="image/*">
+        <span class="muted" style="font-size:12px">काम की जगह की फोटो जोड़ें।</span>
+      </label>
+    </div>
+    <label style="margin-top:14px">👷 Labour Name <span class="required">*</span></label>
+    <div class="muted" style="font-size:12px">जिस Labour पर यह permit लागू है, उसका नाम एक-एक लाइन में डालें।</div>
+    <div id="labourList" class="labour-list">
+      <div class="labour-row"><span class="labour-no">1</span><input class="labour-name" placeholder="Labour Name 1"><button type="button" class="btn danger" onclick="this.parentElement.remove();renumberLabour()">×</button></div>
+    </div>
+    <button type="button" class="btn" style="margin-top:8px" onclick="addLabourRow()">+ Add Labour</button>
+    <label>Remarks / Details</label>
+    <textarea id="workPermitNotes" rows="3" placeholder="Optional permit details"></textarea>
+    <div class="actions" style="margin-top:14px"><button class="btn primary" onclick="saveModuleRecord('workPermit')">Save Work Permit</button></div>
+   </div>
+   <div class="card">
+    <div class="section-head"><div><h3>Work Permit Records</h3><div class="muted">Recent submitted permits</div></div><span class="badge">${records.length}</span></div>
+    <div class="list">
+     ${records.map(r=>`<div class="item permit-record">
+       <div class="row"><b>${esc(r.permitType||'Work Permit')}</b>${permitStatusBadge(r.status||'Pending')}</div><div class="muted" style="margin-top:3px">${esc(r.date||'')}</div>
+       <div style="margin-top:7px"><b>📍 Location:</b> ${esc(r.workLocation||r.site||'—')}</div>
+       <div><b>🏢 Tower:</b> ${esc(r.towerName||'—')} &nbsp; • &nbsp; <b>📌 Area:</b> ${esc(r.areaLocation||'—')}</div>
+       <div class="muted" style="margin-top:5px">Submitted By: ${esc(r.user||'—')}</div>
+       <div style="margin-top:7px"><b>👷 Labour (${(r.labour||[]).length})</b>: ${(r.labour||[]).map(x=>esc(x)).join(', ')||'—'}</div>
+       ${r.notes?`<div style="margin-top:7px">${esc(r.notes)}</div>`:''}
+       ${r.photo?`<img class="permit-photo" src="${r.photo}" alt="Permit photo">`:''}
+     </div>`).join('')||'<div class="empty">No permits yet.</div>'}
+    </div>
+   </div>
+  </main>`);
+}
+function permitSiteChanged(){const sid=$('#workPermitSite')?.value||'';const el=$('#workPermitTower');if(el)el.innerHTML=towerOptions(sid)}
+function selectPermitType(btn,type){
+  document.querySelectorAll('.permit-type-btn').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  const el=document.getElementById('permitType');if(el)el.value=type;
+}
+function managerTeam(){shell(`<main class="wrap">${nav('team')}<div class="card"><div class="section-head"><div><h2>Team & Site Access</h2><div class="muted">Manager decides which sites each team member can work on.</div></div><span class="badge approved">${state.members.length} Members</span></div><div class="list">${state.members.map(m=>{const ids=m.assignedSites||[];return `<div class="item"><div class="row"><div><b>${esc(m.name)}</b><div class="muted" style="font-size:12px;margin-top:3px">Team Member</div></div><div style="display:flex;gap:7px;align-items:center"><span class="badge">${ids.length} Site(s)</span><button class="btn" onclick="editMember('${esc(m.id)}')">✏️ Edit Name</button></div></div><div class="muted" style="margin:8px 0">Assigned sites: ${ids.length?ids.map(id=>esc((state.sites||[]).find(s=>s.id===id)?.name||'')).filter(Boolean).join(', '):'No site assigned yet'}</div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">${(state.sites||[]).map(s=>`<button class="btn ${ids.includes(s.id)?'primary':''}" onclick="toggleMemberSite('${esc(m.name)}','${s.id}')">${ids.includes(s.id)?'✓ ':''}${esc(s.name)}</button>`).join('')||'<span class="muted">Add a site first.</span>'}</div></div>`}).join('')||'<div class="empty">No team members added yet.</div>'}</div><div class="actions" style="margin-top:14px"><button class="btn primary" onclick="addMember()">+ Add Team Member</button><button class="btn" onclick="page('sites')">Manage Sites</button></div></div></main>`)}
+function requestSiteName(x){
+ const site=(state.sites||[]).find(s=>s.id===x.siteId);
+ return x.siteName||site?.name||x.site||'—';
+}
+function allSiteNames(){
+ const names=[];
+ (state.sites||[]).forEach(s=>{if(s.name&&!names.includes(s.name))names.push(s.name)});
+ (state.attendance||[]).forEach(a=>{if(a.siteName&&!names.includes(a.siteName))names.push(a.siteName)});
+ (state.requests||[]).forEach(r=>{const n=requestSiteName(r);if(n&&n!=='—'&&!names.includes(n))names.push(n)});
+ (state.reports||[]).forEach(r=>{const n=r.siteName||((state.sites||[]).find(s=>s.id===r.siteId)?.name);if(n&&!names.includes(n))names.push(n)});
+ return names;
+}
+function managerAllSites(){
+ const names=allSiteNames();
+ shell(`<main class="wrap">${nav('dashboard')}<div class="card"><div class="section-head"><div><h2>📍 All Site</h2><div class="muted">Manager can add sites here. Sites entered by team members also appear automatically.</div></div><span class="badge approved">${names.length} Sites</span></div><div class="actions" style="margin:14px 0"><button class="btn primary" onclick="page('sites')">+ Add / Manage Site</button></div><div class="mini-grid">${names.map(n=>{const managed=(state.sites||[]).find(s=>s.name===n);return `<div class="mini-item"><div class="row"><b>📍 ${esc(n)}</b><span class="badge ${managed?'approved':'pending'}">${managed?'Manager Added':'Team Entered'}</span></div><div class="muted" style="margin-top:7px">${managed?esc(managed.location||'Site details available'):'Automatically added from team activity'}</div></div>`}).join('')||'<div class="empty">No sites yet. Manager can add the first site.</div>'}</div></div></main>`);
+}
+function managerSites(){
+  shell(`<main class="wrap">${nav('sites')}
+  <div class="grid">
+    <div class="card">
+      <h2>Add New Site</h2>
+      <label>Site Name</label><input id="sname" placeholder="e.g. Green Valley Project">
+      <label>Site Location</label><input id="slocation" placeholder="e.g. Andheri, Mumbai">
+      <label>Number of Towers</label><input id="tcount" type="number" min="1" value="1">
+      <label>General Remark</label><textarea id="sremark" placeholder="Site details"></textarea>
+      <div class="actions" style="margin-top:14px"><button class="btn primary" onclick="addSite()">+ Add Site</button></div>
+    </div>
+    <div class="card">
+      <h2>Sites & Towers</h2>
+      <div class="list">${(state.sites||[]).map(siteCard).join('')||'<p class="muted">No sites added yet.</p>'}</div>
+    </div>
+  </div></main>`);
+}
+function siteCard(s){
+ return `<div class="item"><div class="row"><b>${esc(s.name)}</b><span class="badge">${s.towers.length} Tower(s)</span></div>
+ <div class="muted">${esc(s.location||'')}</div>
+ <div style="margin-top:10px">${s.towers.map(t=>`<div class="item" style="margin-top:8px"><div class="row"><b>${esc(t.name)}</b><span class="badge">${esc(t.floors)} Floor(s)</span></div><div class="muted">Added ${esc(t.date)}</div><div class="actions" style="margin-top:6px"><button class="btn" onclick="editTower('${s.id}','${t.id}')">Edit Tower</button></div></div>`).join('')}</div>
+ <div class="actions" style="margin-top:10px"><button class="btn" onclick="editSite('${s.id}')">Edit Site</button><button class="btn" onclick="addTower('${s.id}')">+ Add Tower</button><button class="btn danger" onclick="deleteSite('${s.id}')">Delete Site</button></div></div>`;
+}
+function editSite(siteId){const s=(state.sites||[]).find(x=>x.id===siteId);if(!s)return;const n=prompt('Edit Site name',s.name);if(n===null)return;if(!n.trim())return alert('Site name is required');s.name=n.trim();s.location=prompt('Edit Site location',s.location||'')??s.location;save();managerSites()}
+function editTower(siteId,towerId){const s=(state.sites||[]).find(x=>x.id===siteId),t=s?.towers?.find(x=>x.id===towerId);if(!t)return;const n=prompt('Edit Tower name',t.name);if(n===null)return;if(!n.trim())return alert('Tower name is required');t.name=n.trim();const f=prompt('Edit floors',String(t.floors||1));if(f!==null)t.floors=Math.max(1,parseInt(f)||1);save();managerSites()}
+function addSite(){
+ const name=$('#sname').value.trim(); if(!name)return alert('Site name is required');
+ const count=Math.max(1,parseInt($('#tcount').value||1));
+ const towers=[];
+ for(let i=1;i<=count;i++) towers.push({id:crypto.randomUUID(),name:'Tower '+i,floors:1,date:today()});
+ startProcessing('Adding new site…','Saving site and towers');
+ state.sites=state.sites||[];
+ state.sites.push({id:crypto.randomUUID(),name,location:$('#slocation').value.trim(),remark:$('#sremark').value.trim(),towers});
+ save(); managerSites(); finishProcessing(true);
+}
+function addTower(siteId){
+ const s=(state.sites||[]).find(x=>x.id===siteId); if(!s)return;
+ const name=prompt('Tower name (e.g. Tower A)'); if(!name?.trim())return;
+ const floors=prompt('How many floors?', '10'); if(floors===null)return;
+ s.towers.push({id:crypto.randomUUID(),name:name.trim(),floors:Math.max(1,parseInt(floors)||1),date:today()});
+ save(); managerSites();
+}
+function deleteSite(siteId){
+ if(!confirm('Delete this site and its tower records?'))return;
+ state.sites=(state.sites||[]).filter(x=>x.id!==siteId); save(); managerSites();
+}
+function siteOptions(selected=''){
+ return `<option value="">Select Site</option>`+(state.sites||[]).map(s=>`<option value="${esc(s.id)}" ${s.id===selected?'selected':''}>${esc(s.name)}</option>`).join('');
+}
+function towerOptions(siteId,selected=''){
+ const s=(state.sites||[]).find(x=>x.id===siteId);
+ return `<option value="">Select Tower</option>`+(s?s.towers:[]).map(t=>`<option value="${esc(t.id)}" ${t.id===selected?'selected':''}>${esc(t.name)} — ${esc(t.floors)} Floors</option>`).join('');
+}
+function siteChangedForForm(){
+ const sid=$('#site')?.value||'';
+ const t=$('#tower'); if(t)t.innerHTML=towerOptions(sid);
+}
+function addMember(){
+ const n=prompt('Team member name');
+ if(!n?.trim())return;
+ const email=prompt('Team member Firebase login email (recommended)')||'';
+ const cleanEmail=email.trim().toLowerCase();
+ if(cleanEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail))return alert('Valid login email डालें।');
+ if((state.members||[]).some(x=>cleanEmail && String(x.email||'').toLowerCase()===cleanEmail))return alert('इस email का Team Member पहले से मौजूद है।');
+ startProcessing('Adding team member…','Saving member identity and access');
+ state.members.push({id:crypto.randomUUID(),name:n.trim(),email:cleanEmail,assignedSites:[]});
+ ensureVisibility(); save(); managerTeam(); finishProcessing(true);
+}
+function editMember(memberId){
+ const m=(state.members||[]).find(x=>x.id===memberId);
+ if(!m)return;
+ const oldName=m.name||'';
+ const action=prompt('Team Member: '+oldName+'\n\n1 = Edit Name / Login Email\n2 = Delete Member\n\nEnter 1 or 2:','1');
+ if(action===null)return;
+ if(String(action).trim()==='2'){
+   deleteMember(memberId);
+   return;
+ }
+ if(String(action).trim()!=='1')return alert('Please enter 1 for Edit or 2 for Delete.');
+ const n=prompt('Edit Team Member Name',oldName);
+ if(n===null)return;
+ const newName=n.trim();
+ if(!newName)return alert('Team member name is required.');
+ const currentEmail=String(m.email||'').trim().toLowerCase();
+ const email=prompt('Edit Firebase login email',currentEmail);
+ if(email===null)return;
+ const newEmail=email.trim().toLowerCase();
+ if(newEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail))return alert('Valid login email डालें।');
+ if((state.members||[]).some(x=>x.id!==memberId && newEmail && String(x.email||'').trim().toLowerCase()===newEmail))return alert('इस email का Team Member पहले से मौजूद है।');
+ if(newName===oldName && newEmail===currentEmail)return;
+ if((state.members||[]).some(x=>x.id!==memberId && String(x.name||'').trim().toLowerCase()===newName.toLowerCase()))return alert('इस नाम का Team Member पहले से मौजूद है।');
+ m.name=newName;
+ m.email=newEmail;
+ const updateName=(arr)=>{(arr||[]).forEach(x=>{if(x&&x.name===oldName)x.name=newName;});};
+ updateName(state.reports); updateName(state.attendance); updateName(state.requests);
+ (state.moduleRecords?.workPermit||[]).forEach(x=>{if(x&&x.user===oldName)x.user=newName;if(x&&x.name===oldName)x.name=newName;});
+ (state.moduleRecords?.tbt||[]).forEach(x=>{if(x&&x.user===oldName)x.user=newName;if(x&&x.name===oldName)x.name=newName;});
+ save(); toast('Team Member name updated'); managerTeam();
+}
+function deleteMember(memberId){
+ const m=(state.members||[]).find(x=>x.id===memberId);
+ if(!m)return;
+ const oldName=m.name||'';
+ if(!confirm('Delete Team Member: '+oldName+'?\n\nHistorical reports/permits रहेंगे, लेकिन member की team assignment और visibility access हट जाएगी.'))return;
+ startProcessing('Removing team member…','Clearing access while keeping history');
+ state.members=(state.members||[]).filter(x=>x.id!==memberId);
+ if(state.siteVisibility) delete state.siteVisibility[memberId];
+ ['workPermit','tbt','material','attendance'].forEach(mod=>{
+   if(state.visibility?.[mod]) delete state.visibility[mod][memberId];
+ });
+ save();
+ if(window._selectedVisibilityMemberId===memberId) window._selectedVisibilityMemberId='';
+ toast(oldName+' removed from Team');
+ managerTeamList(); finishProcessing(true);
+}
+function memberSites(name){const m=state.members.find(x=>x.name===name);return m?.assignedSites||[]}
+function toggleMemberSite(name,siteId){const m=state.members.find(x=>x.name===name);if(!m)return;const had=(m.assignedSites||[]).includes(siteId);startProcessing(had?'Removing site access…':'Assigning site access…','Saving team access');m.assignedSites=m.assignedSites||[];m.assignedSites=had?m.assignedSites.filter(id=>id!==siteId):[...m.assignedSites,siteId];save();managerTeam();finishProcessing(true)}
+function assignmentMemberMatches(assignedId, member){
+ const id=String(assignedId||'');
+ if(!id||!member)return false;
+ if(String(member.id||'')===id)return true;
+ // Recover older assignments if a member record was recreated and its ID changed.
+ const assignedMember=(state.members||[]).find(x=>String(x.id||'')===id);
+ if(!assignedMember)return false;
+ const emailA=String(assignedMember.email||'').trim().toLowerCase();
+ const emailB=String(member.email||'').trim().toLowerCase();
+ if(emailA&&emailB&&emailA===emailB)return true;
+ const nameA=String(assignedMember.name||'').trim().toLowerCase();
+ const nameB=String(member.name||'').trim().toLowerCase();
+ return !!nameA&&nameA===nameB;
+}
+function memberAssignedSiteIds(member){
+ const ids=new Set((Array.isArray(member?.assignedSites)?member.assignedSites:[]).map(String));
+ // A site-level system assignment grants that member access to the site. In
+ // older builds only Daily Work Report assignments were included here, so the
+ // accepted assignment could appear in Notifications but not in Site/TBT forms.
+ Object.entries(state.settings?.assignments||{}).forEach(([siteId,systems])=>{
+   Object.values(systems||{}).forEach(a=>{
+     if(a?.enabled && Array.isArray(a.memberIds) && a.memberIds.some(id=>assignmentMemberMatches(id,member))) ids.add(String(siteId));
+   });
+ });
+ return [...ids];
+}
+function siteExplicitlyAssignedToMember(siteId,member){
+ const systems=state.settings?.assignments?.[String(siteId)]||{};
+ return Object.values(systems).some(a=>a?.enabled&&Array.isArray(a.memberIds)&&a.memberIds.some(id=>assignmentMemberMatches(id,member)));
+}
+function assignedSiteOptions(selected=''){
+ const m=currentTeamMember();
+ const ids=memberAssignedSiteIds(m);
+ const mId=String(m?.id||'');
+ const assignedIds=new Set();
+ Object.entries(state.settings?.assignments||{}).forEach(([siteId,systems])=>{
+   if(Object.values(systems||{}).some(a=>a?.enabled && Array.isArray(a.memberIds) && a.memberIds.some(id=>assignmentMemberMatches(id,m)))) assignedIds.add(String(siteId));
+ });
+ // Explicit assignment takes precedence over stale per-member HIDE settings.
+ const sites=(state.sites||[]).filter(s=>ids.includes(String(s.id)) && (assignedIds.has(String(s.id)) || siteVisibleForMember(mId,s.id)));
+ return `<option value="">Select Assigned Site</option>`+sites.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===String(selected)?'selected':''}>${esc(s.name)}</option>`).join('');
+}
+function teamPage(p){
+if(p==='report') return reportForm();
+if(p==='attendance') return attendanceForm();
+if(p==='material') return materialForm();
+const mine=state.reports.filter(x=>x.name===state.user.name).slice(-3).reverse();
+shell(`<main class="wrap">${nav('dashboard')}<div class="grid"><div class="card"><div class="muted">Today's Attendance</div><div class="stat">${state.attendance.find(x=>x.name===state.user.name&&x.date===today())?.status||'—'}</div></div><div class="card"><div class="muted">My Reports</div><div class="stat">${state.reports.filter(x=>x.name===state.user.name).length}</div></div></div><div class="card" style="margin-top:14px"><h3>📍 My Assigned Sites</h3><p class="muted">Manager के अलग 📍 Assign menu से मिली Site चुनें और उसी की Work Report जमा करें। Report में Site, Tower और Floor भरें।</p><div class="list">${(state.sites||[]).filter(s=>memberAssignedSiteIds(currentTeamMember()).includes(String(s.id))&&(siteVisibleForMember(currentTeamMember()?.id||'',s.id)||siteExplicitlyAssignedToMember(s.id,currentTeamMember()))).map(s=>`<div class="item"><b>${esc(s.name)}</b><div class="actions" style="margin-top:8px"><button class="btn primary" onclick="openAssignedSiteReport('${esc(s.id)}')">📝 Work Report दें</button></div></div>`).join('')||'<div class="empty">अभी कोई Site assign नहीं है। Manager से Daily Work Report के सामने Assign टिक करवाएँ।</div>'}</div></div><div class="card" style="margin-top:14px"><div class="section-head"><div><h3>📋 My Permit Status</h3><div class="muted">आज के permits और Manager decision</div></div><button class="btn" onclick="page('workPermit')">Open Permits</button></div><div class="list">${(state.moduleRecords?.workPermit||[]).filter(r=>r.user===state.user.name).slice().reverse().slice(0,5).map(r=>permitRecordCard(r,false)).join('')||'<div class="empty">No permits submitted yet.</div>'}</div></div><div class="card" style="margin-top:14px"><h3>My Recent Reports</h3><div class="list">${mine.map(r=>`<div class="item"><b>${esc(r.date)}</b><div>Completed: ${esc(r.completed)} • Pending: ${esc(r.pending)}</div><div>${esc(r.work)}</div></div>`).join('')||'<p class="muted">No reports yet.</p>'}</div></div></main>`);
+}
+function openAssignedSiteReport(siteId){
+ const member=currentTeamMember();
+ if(!member || !memberAssignedSiteIds(member).includes(siteId))return alert('यह Site आपको assign नहीं की गई है।');
+ reportForm(siteId);
+}
+function reportForm(preselectedSite=''){shell(`<main class="wrap">${nav('report')}<div class="card"><h2>Daily Work Report</h2><label>Assigned Site</label><select id="site" onchange="siteChangedForForm()">${assignedSiteOptions(preselectedSite)}</select>
+<label>${uiLabel('tower','Tower')}</label><select id="tower"><option value="">Select Tower</option></select>
+<label>Floor</label><input id="floor" placeholder="e.g. 5th Floor">
+<label>Date</label><input id="rdate" type="date" value="${today()}"><label>Work Done Today</label><textarea id="work" placeholder="Describe today's work"></textarea><label>Completed Quantity / Progress</label><input id="completed" placeholder="e.g. 80% or 120 sq.ft"><label>Pending Work</label><textarea id="pending" placeholder="What is pending?"></textarea><label>Site Photo</label><input id="photo" type="file" accept="image/*" capture="environment" onchange="previewPhoto(event)"><div id="prev"></div><div class="actions" style="margin-top:14px"><button class="btn primary" onclick="submitReport()">Submit Daily Report</button></div></div></main>`);setTimeout(siteChangedForForm,0)}
+function imageFileToDataUrl(file,maxWidth=1280,quality=.72){return new Promise((resolve,reject)=>{if(!file)return resolve('');const reader=new FileReader();reader.onerror=()=>reject(new Error('Photo read नहीं हो पाई।'));reader.onload=()=>{const img=new Image();img.onerror=()=>reject(new Error('Photo open नहीं हो पाई।'));img.onload=()=>{const scale=Math.min(1,maxWidth/(img.naturalWidth||img.width||maxWidth));const w=Math.max(1,Math.round((img.naturalWidth||img.width)*scale)),h=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,w,h);resolve(canvas.toDataURL('image/jpeg',quality));};img.src=reader.result;};reader.readAsDataURL(file);});}
+async function previewPhoto(e){const f=e.target.files?.[0];if(!f)return;try{const data=await imageFileToDataUrl(f);$('#prev').innerHTML=`<img class="photo-preview" src="${data}">`;}catch(err){alert(err.message||'Photo read failed');}}
+async function submitReport(){const work=$('#work')?.value.trim()||'';const siteId=$('#site')?.value||'';if(!siteId)return alert('Please select an assigned site.');if(!work)return alert('Work details required');const btn=document.querySelector('button[onclick="submitReport()"]');if(btn){btn.disabled=true;btn.textContent='⏳ Saving…';}startProcessing('Submitting report…','Saving daily work report');const selectedSite=(state.sites||[]).find(s=>String(s.id)===String(siteId));let photo='';try{const file=$('#photo')?.files?.[0];if(file)photo=await imageFileToDataUrl(file);const record={id:crypto.randomUUID(),name:state.user.name,siteId,siteName:selectedSite?.name||'',towerName:($('#tower')?.selectedOptions?.[0]?.textContent||'').split(' — ')[0],floor:$('#floor')?.value||'',date:$('#rdate')?.value||today(),work,completed:$('#completed')?.value||'',pending:$('#pending')?.value||'',photo,createdAt:new Date().toISOString()};state.reports.push(record);save();let cloudOk=true;if(state.user?.role!=='manager')cloudOk=await cloudRestAppendArray('reports',record);if(!cloudOk){state.reports=state.reports.filter(x=>x.id!==record.id);localStorage.setItem(KEY,JSON.stringify(state));throw new Error('Firebase में report save नहीं हुई। Internet/login जाँचकर फिर Submit करें।');}queueEvent({type:'report',title:'नई Daily Report',body:record.work.slice(0,140),siteId:record.siteId,siteName:record.siteName,toRole:'manager',recordId:record.id});toast('✅ Daily report cloud में save हुई');page('dashboard');}catch(err){if(btn){btn.disabled=false;btn.textContent='Retry Submit Daily Report';}alert(err?.message||'Report save नहीं हो पाई।');}finally{finishProcessing(true)}}
+function attendanceForm(){
+const existing=state.attendance.find(x=>x.name===state.user.name&&x.date===today());
+shell(`<main class="wrap">${nav('attendance')}<div class="card"><h2>Self Attendance</h2>
+<p class="muted">Attendance के लिए Live Photo और Live Location आवश्यक हैं। Site selection हटा दिया गया है।</p>
+<label>Live Photo / Selfie</label><input id="attPhoto" type="file" accept="image/*" capture="user" onchange="prepareAttendancePhoto(event)">
+<div id="attPrev"></div><div id="attGps" class="muted" style="margin-top:10px">📍 Location: not captured</div>
+<div class="actions" style="margin-top:14px"><button class="btn" onclick="captureAttendanceGPS()">📍 Get Location</button><button class="btn success" onclick="submitAttendance('Present')">Submit Attendance</button></div>
+<p style="margin-top:14px">Today: <b>${existing?.status||'Not marked'}</b></p></div></main>`);
+window._attendanceGPS=null; window._attendancePhoto=null; window._attendanceStampedPhoto=null;
+}
+function captureAttendanceGPS(){
+ if(!navigator.geolocation)return alert('Location is not supported on this device.');
+ $('#attGps').textContent='📍 Getting location…';
+ navigator.geolocation.getCurrentPosition(pos=>{
+  window._attendanceGPS={lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:Math.round(pos.coords.accuracy),capturedAt:new Date().toISOString()};
+  $('#attGps').innerHTML=`📍 Location captured ✓ — ${window._attendanceGPS.lat.toFixed(6)}, ${window._attendanceGPS.lon.toFixed(6)} (±${window._attendanceGPS.accuracy}m)`;
+  buildAttendanceStampedPhoto();
+ },()=>alert('Please allow location permission and try again.'),{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+}
+function prepareAttendancePhoto(e){
+ const f=e.target.files[0]; if(!f)return;
+ const rd=new FileReader(); rd.onload=()=>{window._attendancePhoto=rd.result; if(window._attendanceGPS)buildAttendanceStampedPhoto(); else $('#attPrev').innerHTML=`<img class="photo-preview" src="${rd.result}">`;}; rd.readAsDataURL(f);
+}
+function buildAttendanceStampedPhoto(){
+ if(!window._attendancePhoto||!window._attendanceGPS)return;
+ const img=new Image(); img.onload=()=>{
+  const max=1280,scale=Math.min(1,max/img.width),w=Math.round(img.width*scale),h=Math.round(img.height*scale);
+  const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);
+  const site='Attendance',loc=`Location: ${window._attendanceGPS.lat.toFixed(6)}, ${window._attendanceGPS.lon.toFixed(6)}`,dt=new Date(window._attendanceGPS.capturedAt).toLocaleString();
+  ctx.fillStyle='rgba(0,0,0,.72)';ctx.fillRect(0,h-86,w,86);ctx.fillStyle='#fff';ctx.font='bold 20px Arial';ctx.fillText(`SSE • ${site}`,18,h-58);ctx.font='16px Arial';ctx.fillText(loc,18,h-34);ctx.fillText(`Captured: ${dt}`,18,h-12);
+  window._attendanceStampedPhoto=c.toDataURL('image/jpeg',.88);
+  $('#attPrev').innerHTML=`<img class="photo-preview" src="${window._attendanceStampedPhoto}"><div class="muted" style="font-size:12px">Location stamped on photo ✓</div>`;
+ };img.src=window._attendancePhoto;
+}
+async function submitAttendance(status){
+ const site='Attendance';
+ if(!window._attendanceGPS){toast('❌ FAILED — पहले Get Location दबाएँ।');return alert('Please capture location first.');}
+ if(!window._attendanceStampedPhoto){toast('❌ FAILED — selfie और location दोनों ज़रूरी हैं।');return alert('Please take a selfie and capture location first.');}
+ const btn=[...document.querySelectorAll('button')].find(b=>(b.textContent||'').includes('Submit Attendance'));
+ if(btn){btn.disabled=true;btn.textContent='⏳ SAVING ATTENDANCE…';}
+ const existingIndex=state.attendance.findIndex(x=>x.name===state.user.name&&x.date===today());
+ const record={id:'attendance_'+state.user.name+'_'+today(),name:state.user.name,date:today(),siteName:site,status,photo:window._attendanceStampedPhoto,location:window._attendanceGPS};
+ const previous=existingIndex>=0?state.attendance[existingIndex]:null;
+ try{
+   if(existingIndex>=0) state.attendance[existingIndex]=record;
+   else state.attendance.push(record);
+   const unique=new Map();
+   state.attendance.forEach(a=>unique.set((a.name||'')+'|'+(a.date||''),a));
+   state.attendance=[...unique.values()];
+   save();
+   let cloudOk=false;
+   if(state.user?.role==='manager'){
+     const token=state.authSession?.idToken;
+     if(!token) throw new Error('Firebase session नहीं मिला। दोबारा login करें।');
+     let payload=cloudPayload();
+     const remote=await cloudRestGet();
+     if(remote) payload=mergeIncomingSubmissions(payload,remote);
+     payload.attendance=mergeRecordArrays([record],remote?.attendance||[]);
+     payload.user=null;delete payload.authSession;
+     const body={fields:{}};Object.entries(payload).forEach(([k,v])=>body.fields[k]=firestoreValue(v));
+     const r=await fetch(FIRESTORE_DOC_URL,{method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+     if(!r.ok) throw new Error('Firebase save failed (HTTP '+r.status+').');
+     const verify=await cloudRestGet();
+     cloudOk=Array.isArray(verify?.attendance)&&verify.attendance.some(a=>a.name===record.name&&a.date===record.date);
+   }else{
+     cloudOk=await cloudRestAppendArray('attendance',record);
+   }
+   if(!cloudOk) throw new Error('Firebase ने attendance save confirm नहीं की। Login, internet और Firestore rules जाँचें।');
+   queueEvent({type:'attendance',title:'Attendance जमा हुई',body:state.user.name+' · '+status,siteName:site,toRole:'manager'});
+   toast('✅ DONE — Attendance Firebase पर save हो गई।');
+   attendanceForm();
+ }catch(err){
+   // Restore the local row so the UI does not falsely imply that cloud save succeeded.
+   if(previous){state.attendance=state.attendance.map(a=>a.name===record.name&&a.date===record.date?previous:a);}
+   else state.attendance=state.attendance.filter(a=>!(a.name===record.name&&a.date===record.date));
+   localStorage.setItem(KEY,JSON.stringify(state));
+   if(btn){btn.disabled=false;btn.textContent='❌ FAILED — Retry Attendance';}
+   const msg='❌ FAILED — Attendance cloud में save नहीं हुई: '+(err?.message||'Network/login error');
+   toast(msg);alert(msg);
+ }
+}
+function materialForm(){shell(`<main class="wrap">${nav('material')}<div class="card"><h2>${uiLabel('material','Material Request')}</h2><label>${uiLabel('site','Site')}</label><select id="site" onchange="siteChangedForForm()">${assignedSiteOptions()}</select>
+<label>${uiLabel('tower','Tower')}</label><select id="tower"><option value="">Select Tower</option></select>
+<label>${uiLabel('floor','Floor')}</label><input id="floor" placeholder="e.g. 5th Floor">
+<label>${uiLabel('materialField','Material')}</label><input id="mat" list="materialMasterList" placeholder="e.g. Cement"><datalist id="materialMasterList">${materialOptions().map(x=>`<option value="${esc(x)}">`).join('')}</datalist><label>Quantity</label><input id="qty" type="number" min="0" placeholder="50"><label>Unit</label><select id="unit">${(state.settings.units||[]).map(x=>`<option>${esc(x)}</option>`).join('')}</select><label>Required Date</label><input id="reqdate" type="date" value="${today()}"><label>Remark</label><textarea id="note" placeholder="Urgent requirement / details"></textarea><div class="actions" style="margin-top:14px"><button class="btn primary" onclick="submitMaterial()">Send to Manager</button></div></div></main>`);setTimeout(siteChangedForForm,0)}
+async function submitMaterial(){const material=$('#mat')?.value.trim()||'',qty=$('#qty')?.value||'',sid=$('#site')?.value||'';if(!sid)return alert('Please select an assigned site.');if(!material||!qty||Number(qty)<=0)return alert('Material और सही quantity जरूरी हैं।');const btn=document.querySelector('button[onclick="submitMaterial()"]');if(btn){btn.disabled=true;btn.textContent='⏳ Saving…';}startProcessing('Sending request…','Saving material request for Manager');const selectedSite=(state.sites||[]).find(s=>String(s.id)===String(sid));const record={id:crypto.randomUUID(),type:'Material Request',siteId:sid,siteName:selectedSite?.name||'',towerName:($('#tower')?.selectedOptions?.[0]?.textContent||'').split(' — ')[0],floor:$('#floor')?.value||'',material,quantity:qty,unit:$('#unit')?.value||'',name:state.user.name,date:today(),requiredDate:$('#reqdate')?.value||today(),note:$('#note')?.value||'',status:'Pending',createdAt:new Date().toISOString()};try{state.requests.push(record);save();if(state.user?.role!=='manager'&&!await cloudRestAppendArray('requests',record)){state.requests=state.requests.filter(x=>x.id!==record.id);localStorage.setItem(KEY,JSON.stringify(state));throw new Error('Firebase में request save नहीं हुई। Internet/login जाँचें।');}queueEvent({type:'material-request',title:'नई Material Request',body:material+' · Qty '+qty,siteId:sid,siteName:selectedSite?.name||'',toRole:'manager',recordId:record.id});toast('✅ Material request cloud में save हुई');page('dashboard');}catch(err){if(btn){btn.disabled=false;btn.textContent='Retry Send to Manager';}alert(err?.message||'Request save नहीं हुई।');}finally{finishProcessing(true)}}
+/* ===== V30 UNIVERSAL LONG-PRESS EDIT SYSTEM ===== */
+let v28LongPressTimer=null,v28LongPressTarget=null,v28LongPressTriggered=false;
+function v28EditableTarget(el){
+ // Never start the edit-on-long-press gesture from form controls. On touch
+ // devices a checkbox/label press was bubbling to its surrounding card, which
+ // opened an editor and made the current screen appear to jump/reset.
+ if(state.user?.role!=='manager') return null;
+ if(el?.closest?.('input,textarea,select,option,label,button,a,[role=button],[contenteditable="true"],.permit-check,.permit-type-grid,.labour-list,.v28-edit-modal')) return null;
+ // Restrict long-press editing to actual editable dashboard/menu items only;
+ // ordinary cards and form panels must never capture selection gestures.
+ const t=el?.closest?.('[data-v28-route],[data-custom-menu-id],[data-dashboard-index],.dash-card,.module-choice,.module-dashboard-card,.custom-system-card');
+ if(!t) return null;
+ return t;
+}
+function v28Context(el){
+ const route=el.getAttribute('data-v28-route')||'';
+ const customId=el.getAttribute('data-custom-menu-id')||'';
+ const itemIndex=el.getAttribute('data-custom-item-index');
+ const dashIndex=el.getAttribute('data-dashboard-index');
+ return {el,route,customId,itemIndex:itemIndex===''?null:(itemIndex==null?null:Number(itemIndex)),dashIndex:dashIndex===''?null:(dashIndex==null?null:Number(dashIndex))};
+}
+function v28StartLongPress(e){
+ const t=v28EditableTarget(e.target); if(!t)return;
+ v28LongPressTriggered=false;v28LongPressTarget=t;
+ clearTimeout(v28LongPressTimer);
+ v28LongPressTimer=setTimeout(()=>{v28LongPressTriggered=true;t.classList.add('longpress-editing');v28ShowHint('✏️ Long-press edit');setTimeout(()=>{t.classList.remove('longpress-editing');v28HideHint()},850);v28OpenEditor(v28Context(t));},650);
+}
+function v28CancelLongPress(){clearTimeout(v28LongPressTimer);v28LongPressTimer=null}
+function v28ShowHint(msg){v28HideHint();const d=document.createElement('div');d.id='v28LongHint';d.className='longpress-hint';d.textContent=msg;document.body.appendChild(d)}
+function v28HideHint(){document.getElementById('v28LongHint')?.remove()}
+function v28OpenEditor(ctx){
+ const {route,customId,itemIndex,dashIndex,el}=ctx;
+ if(dashIndex!=null){return dashboardEditor()}
+ if(customId && itemIndex!=null){return v28EditCustomSystem(customId,itemIndex)}
+ if(customId){const i=customMenus().findIndex(m=>m.id===customId);if(i>=0)return editCustomMenu(i)}
+ if(route==='customMenuEditor')return customMenuEditor();
+ if(['dashboard','requests','reports','permitCheck','dailyHistory','team','visibility','admin'].includes(route)){
+   if(route==='dashboard')return dashboardEditor();
+   if(route==='team')return managerTeam();
+   if(route==='visibility'||route==='admin')return managerVisibility();
+ }
+ return v28GenericEditor(el,route);
+}
+function v28GenericEditor(el,route){
+ const old=el.getAttribute('data-v28-label')||el.querySelector('b')?.textContent?.trim()||el.textContent.trim().split(/\n/)[0].trim()||'Option';
+ const icon=el.getAttribute('data-v28-icon')||'';
+ const modal=document.createElement('div');modal.className='v28-edit-modal';modal.innerHTML=`<div class="v28-edit-box"><h3>✏️ Edit Option</h3><div class="muted">इस option का नाम और icon बदल सकते हैं।</div><label>Name / Title<input id="v28Title" value="${esc(old)}"></label><label>Icon / Logo<input id="v28Icon" value="${esc(icon)}" placeholder="📁"></label><div class="actions" style="margin-top:15px"><button class="btn primary" id="v28Save">💾 Save</button><button class="btn" id="v28Cancel">Cancel</button></div></div>`;document.body.appendChild(modal);
+ modal.querySelector('#v28Cancel').onclick=()=>modal.remove();modal.querySelector('#v28Save').onclick=()=>{const title=modal.querySelector('#v28Title').value.trim();const ic=modal.querySelector('#v28Icon').value.trim();if(!title)return alert('Name / Title जरूरी है।');el.setAttribute('data-v28-label',title);el.setAttribute('data-v28-icon',ic);const key=route||('el_'+Array.from(document.querySelectorAll('button,.dash-card,.module-choice,.module-dashboard-card')).indexOf(el));state.settings.menuOverrides=state.settings.menuOverrides||{};state.settings.menuOverrides[key]={title,icon:ic};save();modal.remove();toast('Option updated');if(route)page(route);};
+}
+function v28EditCustomSystem(menuId,index){const m=customMenus().find(x=>x.id===menuId);if(!m)return;const old=(m.items||[])[index]||'';const modal=document.createElement('div');modal.className='v28-edit-modal';modal.innerHTML=`<div class="v28-edit-box"><h3>✏️ Edit System</h3><div class="muted">${esc(m.title)} के अंदर इस system को edit करें।</div><label>System Name<input id="v28Sys" value="${esc(old)}"></label><div class="actions" style="margin-top:15px"><button class="btn primary" id="v28Save">💾 Save</button><button class="btn danger" id="v28Del">🗑️ Delete</button><button class="btn" id="v28Cancel">Cancel</button></div></div>`;document.body.appendChild(modal);modal.querySelector('#v28Cancel').onclick=()=>modal.remove();modal.querySelector('#v28Del').onclick=()=>{if(confirm('इस system को हटाना है?')){m.items.splice(index,1);save();modal.remove();customMenuPage(menuId)}};modal.querySelector('#v28Save').onclick=()=>{const v=modal.querySelector('#v28Sys').value.trim();if(!v)return alert('System Name जरूरी है।');m.items[index]=v;save();modal.remove();toast('System updated');customMenuPage(menuId)}}
+function v28InstallLongPress(){
+ document.addEventListener('pointerdown',v28StartLongPress,{passive:true});document.addEventListener('pointerup',v28CancelLongPress,{passive:true});document.addEventListener('pointercancel',v28CancelLongPress,{passive:true});document.addEventListener('pointermove',v28CancelLongPress,{passive:true});
+ document.addEventListener('click',e=>{if(v28LongPressTriggered){e.preventDefault();e.stopPropagation();v28LongPressTriggered=false}},true);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',v28InstallLongPress);else v28InstallLongPress();
+
+function installApp(){if(window.deferredPrompt){window.deferredPrompt.prompt();window.deferredPrompt=null}else alert('On Android Chrome: browser menu → Add to Home screen. On desktop: use the install icon in the address bar.')}
+let deferredPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;window.deferredPrompt=e});
+function render(){page('dashboard')}
+function ensureVisibility(){
+  if(!state.visibility) state.visibility={};
+  if(!state.siteVisibility) state.siteVisibility={};
+  const mods=['tbt','workPermit','material','attendance'];
+  mods.forEach(mod=>{
+    if(!state.visibility[mod]) state.visibility[mod]={};
+    (state.members||[]).forEach(m=>{
+      if(!m.id)m.id=crypto.randomUUID();
+      if(typeof state.visibility[mod][m.id]==='undefined') state.visibility[mod][m.id]=true;
+      if(!state.siteVisibility[m.id]) state.siteVisibility[m.id]={};
+      (state.sites||[]).forEach(site=>{if(typeof state.siteVisibility[m.id][site.id]==='undefined') state.siteVisibility[m.id][site.id]=true;});
+    });
+  });
+}
+function canSee(memberId,mod){ return moduleVisibleById(memberId,mod); }
+function visibilityLabel(memberId,mod){ return moduleVisibleById(memberId,mod)?'SHOW':'HIDE'; }
+function toggleVisibility(memberId,mod){ toggleAccess(memberId,mod); }
+function moduleName(mod){ return ({tbt:uiLabel('tbt','TBT Photo'),workPermit:uiLabel('workPermit','Work Permit'),material:uiLabel('material','Material Request'),attendance:uiLabel('attendance','Attendance')})[mod]||mod; }
+ensureVisibility();
+save();
+render();
+window.firebaseReady.then(fb=>{
+  if(fb.ready && fb.user){
+    const role=fb.user.email?.toLowerCase()==='silverstarenterprises51@gmail.com'?'manager':'team';
+    state.user=state.user||{role,name:fb.user.email?.split('@')[0]||'User',email:fb.user.email,uid:fb.user.uid};
+    state.user.role=role; state.user.email=fb.user.email; state.user.uid=fb.user.uid;
+    startCloudSync(fb.user).then(()=>render());
+  }
+});
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+</script>
+</body></html>
