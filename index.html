@@ -7,7 +7,7 @@
 <meta name="description" content="SSE Reporting App - Silver Star Enterprises">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/sse-logo-192.png">
-<title>SSE Reporting App — V62 Team Visibility Fix</title>
+<title>SSE Reporting App — V62 Work Permit Archive</title>
 <style>
 :root{--navy:#0b1b31;--blue:#1769aa;--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#697386;--line:#e5e9f0;--green:#198754;--red:#dc3545;--amber:#f59f00}
 *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -308,7 +308,7 @@ window.firebaseReady = (async()=>{
 const KEY='sse_reporting_v1';'sse_reporting_v1';
 const state=JSON.parse(localStorage.getItem(KEY)||'null')||{user:null,reports:[],requests:[],attendance:[],members:[{name:'Team Member 1',assignedSites:[]},{name:'Team Member 2',assignedSites:[]}],sites:[],settings:{}};
 state.settings=state.settings||{};
-state.settings.version='V62 TEAM VISIBILITY FIX';
+state.settings.version='V62 WORK PERMIT ARCHIVE';
 state.notifications=Array.isArray(state.notifications)?state.notifications:[];
 state.notificationReceipts=Array.isArray(state.notificationReceipts)?state.notificationReceipts:[];
 state.settings.pushVapidKey=state.settings.pushVapidKey||'';
@@ -661,9 +661,9 @@ function shell(content){
       : `<button onclick="page('report')">📝<br>Report</button><button onclick="page('attendance')">🕘<br>Attend</button><button onclick="page('material')">📦<br>Material</button><button onclick="page('workPermit')">📋<br>Permit</button>`}
   </div>`:'';
   document.getElementById('app').innerHTML=`<div class="app">
-  <header class="top"><img src="${state.settings.appLogo||'icons/sse-logo-192.png'}"><div><h1>${uiLabel('appName','SSE Reporting App')}</h1><small>Silver Star Enterprises • <span class="version-pill" title="Current upgraded app version">V61 FULL SYSTEM RELIABILITY</span></small></div>
+  <header class="top"><img src="${state.settings.appLogo||'icons/sse-logo-192.png'}"><div><h1>${uiLabel('appName','SSE Reporting App')}</h1><small>Silver Star Enterprises • <span class="version-pill" title="Current upgraded app version">V62 WORK PERMIT ARCHIVE</span></small></div>
   <div style="margin-left:auto;display:flex;align-items:center">${u?`<span class="user-chip"><span class="user-dot"></span>${esc(u.name)} · ${role}</span><button class="btn" onclick="logout()">Logout</button>`:''}</div></header>
-  ${content}<div class="card upgrade-note" role="status"><b>🆕 App Updated: V61 FULL SYSTEM RELIABILITY</b><div>फॉर्म में ऑप्शन चुनते समय स्क्रीन पीछे जाने/रीसेट होने की समस्या रोकने के लिए टच और लॉन्ग-प्रेस हैंडलिंग सुधारी गई है। कई विकल्प चुनकर फिर आगे बढ़ सकते हैं।</div><small>Update History: V61 — Assignment, Site, Report/TBT sync reliability; V53 — अलग Assign menu और site-wise Work Report assignment; V52 — Site assignment और Work Report access; V51 — फॉर्म/चेकबॉक्स के ऊपर गलती से खुलने वाला long-press editor बंद; V49 — auto-back fix; V48 — Cloud Queue और notification status tracking. ऐप बंद होने पर Push के लिए Firebase VAPID key और Cloud Function सेटअप आवश्यक है।</small></div><div class="footer">SSE Reporting App • V61 FULL SYSTEM RELIABILITY • Firebase cloud sync enabled</div>${bottom}<div id="v20Toast" class="v20-toast"></div></div>`;
+  ${content}<div class="card upgrade-note" role="status"><b>🆕 App Updated: V62 WORK PERMIT ARCHIVE</b><div>फॉर्म में ऑप्शन चुनते समय स्क्रीन पीछे जाने/रीसेट होने की समस्या रोकने के लिए टच और लॉन्ग-प्रेस हैंडलिंग सुधारी गई है। कई विकल्प चुनकर फिर आगे बढ़ सकते हैं।</div><small>Update History: V62 — Work Permit Archive, monthly list/PDF workflow; V53 — अलग Assign menu और site-wise Work Report assignment; V52 — Site assignment और Work Report access; V51 — फॉर्म/चेकबॉक्स के ऊपर गलती से खुलने वाला long-press editor बंद; V49 — auto-back fix; V48 — Cloud Queue और notification status tracking. ऐप बंद होने पर Push के लिए Firebase VAPID key और Cloud Function सेटअप आवश्यक है।</small></div><div class="footer">SSE Reporting App • V62 WORK PERMIT ARCHIVE • Firebase cloud sync enabled</div>${bottom}<div id="v20Toast" class="v20-toast"></div></div>`;
 }
 function login(){
  shell(`<main class="wrap"><div class="card login"><img class="logo" src="${state.settings.appLogo||'icons/sse-logo-512.png'}"><h2 style="text-align:center">${uiLabel('appName','SSE Reporting App')}</h2><p class="muted" style="text-align:center">Construction Site Daily Reporting • Online Trial</p>
@@ -1063,7 +1063,7 @@ shell(`<main class="wrap">${nav('dashboard')}
 <div class="section-card" onclick="page('permitCheck')" style="cursor:pointer">
 <div class="section-head"><div><h2>📋 Work Permit / TVTO — Latest Submissions</h2><div class="muted">Manager dashboard पर team ने जो permit details डाली हैं, वही यहाँ दिखेंगी।</div></div><span class="badge approved">${(state.moduleRecords?.workPermit||[]).length} Total</span></div>
 <div class="list">
-${(state.moduleRecords?.workPermit||[]).slice().reverse().slice(0,8).map(r=>`<div class="item">
+${(state.moduleRecords?.workPermit||[]).filter(r=>r.date===today()).slice().reverse().slice(0,8).map(r=>`<div class="item">
   <div class="row"><b>${esc(r.permitType||'Work Permit')}</b>${permitStatusBadge(r.status||'Pending')}</div><div class="muted" style="margin-top:3px">${esc(r.date||'')}</div>
   <div style="margin-top:6px"><b>📍 Location:</b> ${esc(r.workLocation||r.site||'—')} &nbsp; • &nbsp; <b>🏢 Tower:</b> ${esc(r.towerName||'—')}</div>
   <div class="muted" style="margin-top:5px"><b>📌 Area:</b> ${esc(r.areaLocation||'—')} • Labour: ${(r.labour||[]).length}</div>
@@ -1119,12 +1119,31 @@ function permitRecordCard(r,manager=false){
  </div>`;
 }
 function managerPermitCheck(){
- const rows=(state.moduleRecords?.workPermit||[]).slice().reverse(); const pending=rows.filter(r=>(r.status||'Pending')==='Pending');
+ const all=(state.moduleRecords?.workPermit||[]).slice();
+ const month=window._permitMonth||today().slice(0,7);
+ const member=window._permitMember||'ALL';
+ const members=[...new Set(all.map(r=>r.user||r.name||'Unknown').filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ const rows=all.filter(r=>String(r.date||'').startsWith(month)&&(member==='ALL'||(r.user||r.name||'Unknown')===member)).sort((a,b)=>String(b.createdAt||b.date).localeCompare(String(a.createdAt||a.date)));
+ const pending=rows.filter(r=>(r.status||'Pending')==='Pending').length;
+ const rejected=rows.filter(r=>r.status==='Rejected').length;
+ const approved=rows.filter(r=>r.status==='Approved').length;
  shell(`<main class="wrap">${nav('permitCheck')}<div class="card">
-  <div class="section-head"><div><h2>📋 Permit Check</h2><div class="muted">Team Member के submitted Work Permits को Manager यहाँ review करेगा।</div></div><span class="badge pending">${pending.length} Pending</span></div>
-  <div class="notice"><b>Workflow:</b> Team Member Submit → Pending → Manager Check → Approve / Reject → Daily History.</div>
-  <div class="list">${rows.map(r=>permitRecordCard(r,true)).join('')||'<div class="empty">No work permits submitted yet.</div>'}</div>
+  <div class="section-head"><div><h2>📋 Work Permit Archive & Review</h2><div class="muted">आज के permits Recent में; पुराने permits यहाँ date-wise सुरक्षित रहेंगे।</div></div><span class="badge pending">${pending} Pending</span></div>
+  <div class="mini-grid" style="margin-bottom:14px"><div class="mini-item"><b>🟠 Pending</b><div class="stat">${pending}</div></div><div class="mini-item"><b>🟢 Approved</b><div class="stat">${approved}</div></div><div class="mini-item"><b>🔴 Rejected</b><div class="stat">${rejected}</div></div><div class="mini-item"><b>📋 Total in month</b><div class="stat">${rows.length}</div></div></div>
+  <div class="notice"><b>Workflow:</b> Team Member Submit → Manager Check → Approve / Reject. Rejected permits और rejection remarks भी archive में रहेंगे।</div>
+  <div class="form-grid" style="margin:14px 0"><label>Month<select id="permitArchiveMonth" onchange="window._permitMonth=this.value;managerPermitCheck()">${Array.from({length:24},(_,i)=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);const v=d.toISOString().slice(0,7);return `<option value="${v}" ${v===month?'selected':''}>${v}</option>`}).join('')}</select></label><label>Team Member<select id="permitArchiveMember" onchange="window._permitMember=this.value;managerPermitCheck()"><option value="ALL" ${member==='ALL'?'selected':''}>All team members</option>${members.map(m=>`<option value="${esc(m)}" ${member===m?'selected':''}>${esc(m)}</option>`).join('')}</select></label></div>
+  <div class="actions" style="margin-bottom:14px"><button class="btn primary" onclick="exportPermitMonth()">⬇️ Download Monthly List (PDF)</button><button class="btn" onclick="window._permitMonth=today().slice(0,7);window._permitMember='ALL';managerPermitCheck()">Current Month / All Members</button></div>
+  <div class="muted" style="margin-bottom:10px">PDF में चुने हुए महीने और मेंबर की permit list आएगी। Download दबाकर print dialog में “Save as PDF” चुनें।</div>
+  <div class="list">${rows.map(r=>permitRecordCard(r,true)).join('')||'<div class="empty">इस महीने और चुने हुए मेंबर के कोई Work Permits नहीं हैं। पुराने महीने देखने के लिए Month बदलें।</div>'}</div>
  </div></main>`)
+}
+function exportPermitMonth(){
+ const month=window._permitMonth||today().slice(0,7), member=window._permitMember||'ALL';
+ const rows=(state.moduleRecords?.workPermit||[]).filter(r=>String(r.date||'').startsWith(month)&&(member==='ALL'||(r.user||r.name||'Unknown')===member)).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+ const title=`SSE Work Permit Register — ${month}`;
+ const body=rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.date||'—')}</td><td>${esc(r.user||r.name||'—')}</td><td>${esc(r.permitType||'Work Permit')}</td><td>${esc(r.workLocation||r.siteName||r.site||'—')}</td><td>${esc(r.towerName||'—')}</td><td>${esc((r.labour||[]).join(', ')||'—')}</td><td>${esc(r.status||'Pending')}</td><td>${esc(r.reviewRemark||'—')}</td></tr>`).join('');
+ const w=window.open('','_blank'); if(!w){alert('PDF बनाने के लिए popup allow करें।');return;}
+ w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:Arial,sans-serif;padding:20px;color:#172033}h1{font-size:20px}p{color:#555}table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid #cbd5e1;padding:6px;text-align:left;vertical-align:top}th{background:#eef3f8} @media print{button{display:none}body{padding:0}}</style></head><body><h1>Silver Star Enterprises — Work Permit Register</h1><p>Month: ${month} &nbsp; | &nbsp; Team Member: ${member==='ALL'?'All team members':esc(member)} &nbsp; | &nbsp; Total: ${rows.length}</p><button onclick="window.print()">Print / Save as PDF</button><table><thead><tr><th>#</th><th>Date</th><th>Submitted By</th><th>Permit Type</th><th>Site / Location</th><th>Tower</th><th>Labour</th><th>Status</th><th>Manager Remark</th></tr></thead><tbody>${body||'<tr><td colspan="9">No permits found for this selection.</td></tr>'}</tbody></table><script>setTimeout(()=>window.print(),400)<\/script></body></html>`);w.document.close();
 }
 function dailyHistory(){
  const isManager=state.user?.role==='manager';
@@ -1357,7 +1376,7 @@ function selectPermitType(btn,type){
   btn.classList.add('active');
   const el=document.getElementById('permitType');if(el)el.value=type;
 }
-function managerTeam(){shell(`<main class="wrap">${nav('team')}<div class="card"><div class="section-head"><div><h2>Team & Site Access</h2><div class="muted">Manager decides which sites each team member can work on.</div></div><span class="badge approved">${state.members.length} Members</span></div><div class="list">${state.members.map(m=>{const ids=m.assignedSites||[];return `<div class="item"><div class="row"><div><b>${esc(m.name)}</b><div class="muted" style="font-size:12px;margin-top:3px">Team Member • Login: ${esc(m.email||"Email not linked — tap Edit Name")}</div></div><div style="display:flex;gap:7px;align-items:center"><span class="badge">${ids.length} Site(s)</span><button class="btn" onclick="editMember('${esc(m.id)}')">✏️ Edit Name</button></div></div><div class="muted" style="margin:8px 0">Assigned sites: ${ids.length?ids.map(id=>esc((state.sites||[]).find(s=>s.id===id)?.name||'')).filter(Boolean).join(', '):'No site assigned yet'}</div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">${(state.sites||[]).map(s=>`<button class="btn ${ids.includes(s.id)?'primary':''}" onclick="toggleMemberSite('${esc(m.name)}','${s.id}')">${ids.includes(s.id)?'✓ ':''}${esc(s.name)}</button>`).join('')||'<span class="muted">Add a site first.</span>'}</div></div>`}).join('')||'<div class="empty">No team members added yet.</div>'}</div><div class="actions" style="margin-top:14px"><button class="btn primary" onclick="addMember()">+ Add Team Member</button><button class="btn" onclick="page('sites')">Manage Sites</button></div></div></main>`)}
+function managerTeam(){shell(`<main class="wrap">${nav('team')}<div class="card"><div class="section-head"><div><h2>Team & Site Access</h2><div class="muted">Manager decides which sites each team member can work on.</div></div><span class="badge approved">${state.members.length} Members</span></div><div class="list">${state.members.map(m=>{const ids=m.assignedSites||[];return `<div class="item"><div class="row"><div><b>${esc(m.name)}</b><div class="muted" style="font-size:12px;margin-top:3px">Team Member</div></div><div style="display:flex;gap:7px;align-items:center"><span class="badge">${ids.length} Site(s)</span><button class="btn" onclick="editMember('${esc(m.id)}')">✏️ Edit Name</button></div></div><div class="muted" style="margin:8px 0">Assigned sites: ${ids.length?ids.map(id=>esc((state.sites||[]).find(s=>s.id===id)?.name||'')).filter(Boolean).join(', '):'No site assigned yet'}</div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">${(state.sites||[]).map(s=>`<button class="btn ${ids.includes(s.id)?'primary':''}" onclick="toggleMemberSite('${esc(m.name)}','${s.id}')">${ids.includes(s.id)?'✓ ':''}${esc(s.name)}</button>`).join('')||'<span class="muted">Add a site first.</span>'}</div></div>`}).join('')||'<div class="empty">No team members added yet.</div>'}</div><div class="actions" style="margin-top:14px"><button class="btn primary" onclick="addMember()">+ Add Team Member</button><button class="btn" onclick="page('sites')">Manage Sites</button></div></div></main>`)}
 function requestSiteName(x){
  const site=(state.sites||[]).find(s=>s.id===x.siteId);
  return x.siteName||site?.name||x.site||'—';
@@ -1531,15 +1550,14 @@ function assignedSiteOptions(selected=''){
  });
  // Explicit assignment takes precedence over stale per-member HIDE settings.
  const sites=(state.sites||[]).filter(s=>ids.includes(String(s.id)) && (assignedIds.has(String(s.id)) || siteVisibleForMember(mId,s.id)));
- return `<option value="">${m?'Select Assigned Site':'⚠ Login email not linked — ask Manager to edit this member'}</option>`+sites.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===String(selected)?'selected':''}>${esc(s.name)}</option>`).join('');
+ return `<option value="">Select Assigned Site</option>`+sites.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===String(selected)?'selected':''}>${esc(s.name)}</option>`).join('');
 }
 function teamPage(p){
 if(p==='report') return reportForm();
 if(p==='attendance') return attendanceForm();
 if(p==='material') return materialForm();
 const mine=state.reports.filter(x=>x.name===state.user.name).slice(-3).reverse();
-const identityWarning=!currentTeamMember()?`<div class="card" style="border:2px solid #f59f00;background:#fff8e6;margin-top:12px"><b>⚠ Team login link missing</b><p style="margin:6px 0">Manager के Team & Site Access में इस login email <b>${esc(state.user?.email||'')}</b> को सही member के साथ link करें: member पर Edit Name दबाकर यही Firebase login email सेव करें। इसके बाद site assignment दिखेगा।</p></div>`:'';
-shell(`<main class="wrap">${nav('dashboard')}${identityWarning}<div class="grid"><div class="card"><div class="muted">Today's Attendance</div><div class="stat">${state.attendance.find(x=>x.name===state.user.name&&x.date===today())?.status||'—'}</div></div><div class="card"><div class="muted">My Reports</div><div class="stat">${state.reports.filter(x=>x.name===state.user.name).length}</div></div></div><div class="card" style="margin-top:14px"><h3>📍 My Assigned Sites</h3><p class="muted">Manager के अलग 📍 Assign menu से मिली Site चुनें और उसी की Work Report जमा करें। Report में Site, Tower और Floor भरें।</p><div class="list">${(state.sites||[]).filter(s=>memberAssignedSiteIds(currentTeamMember()).includes(String(s.id))&&(siteVisibleForMember(currentTeamMember()?.id||'',s.id)||siteExplicitlyAssignedToMember(s.id,currentTeamMember()))).map(s=>`<div class="item"><b>${esc(s.name)}</b><div class="actions" style="margin-top:8px"><button class="btn primary" onclick="openAssignedSiteReport('${esc(s.id)}')">📝 Work Report दें</button></div></div>`).join('')||'<div class="empty">अभी कोई Site assign नहीं है। Manager से Daily Work Report के सामने Assign टिक करवाएँ।</div>'}</div></div><div class="card" style="margin-top:14px"><div class="section-head"><div><h3>📋 My Permit Status</h3><div class="muted">आज के permits और Manager decision</div></div><button class="btn" onclick="page('workPermit')">Open Permits</button></div><div class="list">${(state.moduleRecords?.workPermit||[]).filter(r=>r.user===state.user.name).slice().reverse().slice(0,5).map(r=>permitRecordCard(r,false)).join('')||'<div class="empty">No permits submitted yet.</div>'}</div></div><div class="card" style="margin-top:14px"><h3>My Recent Reports</h3><div class="list">${mine.map(r=>`<div class="item"><b>${esc(r.date)}</b><div>Completed: ${esc(r.completed)} • Pending: ${esc(r.pending)}</div><div>${esc(r.work)}</div></div>`).join('')||'<p class="muted">No reports yet.</p>'}</div></div></main>`);
+shell(`<main class="wrap">${nav('dashboard')}<div class="grid"><div class="card"><div class="muted">Today's Attendance</div><div class="stat">${state.attendance.find(x=>x.name===state.user.name&&x.date===today())?.status||'—'}</div></div><div class="card"><div class="muted">My Reports</div><div class="stat">${state.reports.filter(x=>x.name===state.user.name).length}</div></div></div><div class="card" style="margin-top:14px"><h3>📍 My Assigned Sites</h3><p class="muted">Manager के अलग 📍 Assign menu से मिली Site चुनें और उसी की Work Report जमा करें। Report में Site, Tower और Floor भरें।</p><div class="list">${(state.sites||[]).filter(s=>memberAssignedSiteIds(currentTeamMember()).includes(String(s.id))&&(siteVisibleForMember(currentTeamMember()?.id||'',s.id)||siteExplicitlyAssignedToMember(s.id,currentTeamMember()))).map(s=>`<div class="item"><b>${esc(s.name)}</b><div class="actions" style="margin-top:8px"><button class="btn primary" onclick="openAssignedSiteReport('${esc(s.id)}')">📝 Work Report दें</button></div></div>`).join('')||'<div class="empty">अभी कोई Site assign नहीं है। Manager से Daily Work Report के सामने Assign टिक करवाएँ।</div>'}</div></div><div class="card" style="margin-top:14px"><div class="section-head"><div><h3>📋 My Permit Status</h3><div class="muted">आज के permits और Manager decision</div></div><button class="btn" onclick="page('workPermit')">Open Permits</button></div><div class="list">${(state.moduleRecords?.workPermit||[]).filter(r=>r.user===state.user.name).slice().reverse().slice(0,5).map(r=>permitRecordCard(r,false)).join('')||'<div class="empty">No permits submitted yet.</div>'}</div></div><div class="card" style="margin-top:14px"><h3>My Recent Reports</h3><div class="list">${mine.map(r=>`<div class="item"><b>${esc(r.date)}</b><div>Completed: ${esc(r.completed)} • Pending: ${esc(r.pending)}</div><div>${esc(r.work)}</div></div>`).join('')||'<p class="muted">No reports yet.</p>'}</div></div></main>`);
 }
 function openAssignedSiteReport(siteId){
  const member=currentTeamMember();
