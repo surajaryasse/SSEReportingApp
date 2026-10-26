@@ -565,7 +565,7 @@ async function startCloudSync(user){
     if(snap.exists()){
       window.SSEFirebase.syncing=true;
       Object.assign(state,snap.data()||{});
-      state.user={role:user.email?.toLowerCase()==='Aryastar31@gmail.com'?'manager':'team',name:state.user?.name||user.email?.split('@')[0]||'User',email:user.email,uid:user.uid};
+      state.user={role:user.email?.toLowerCase()==='aryastar31@gmail.com'?'manager':'team',name:state.user?.name||user.email?.split('@')[0]||'User',email:user.email,uid:user.uid};
       window.SSEFirebase.syncing=false;
       localStorage.setItem(KEY,JSON.stringify(state));
     } else if(state.user?.role==='manager'){
@@ -715,7 +715,7 @@ async function doLogin(){
      throw err;
    }
 
-   const role=email.toLowerCase()==='Aryastar31@gmail.com'?'manager':'team';
+   const role=email.toLowerCase()==='aryastar31@gmail.com'?'manager':'team';
    state.user={role,name:email.split('@')[0],email:email,uid:data.localId};
    // Keep the Auth session locally so reopening the downloaded app can restore it.
    state.authSession={
@@ -1756,7 +1756,7 @@ save();
 render();
 window.firebaseReady.then(fb=>{
   if(fb.ready && fb.user){
-    const role=fb.user.email?.toLowerCase()==='Aryastar31@gmail.com'?'manager':'team';
+    const role=fb.user.email?.toLowerCase()==='aryastar31@gmail.com'?'manager':'team';
     state.user=state.user||{role,name:fb.user.email?.split('@')[0]||'User',email:fb.user.email,uid:fb.user.uid};
     state.user.role=role; state.user.email=fb.user.email; state.user.uid=fb.user.uid;
     startCloudSync(fb.user).then(()=>render());
