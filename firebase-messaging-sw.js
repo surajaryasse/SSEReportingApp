@@ -3,12 +3,12 @@
 importScripts('https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging-compat.js');
 firebase.initializeApp({
-  apiKey: 'AIzaSyApenAy7aZvJHqhBNgfU3rmeyMR9QJsrvo',
-  authDomain: 'sse-reporting-app.firebaseapp.com',
-  projectId: 'sse-reporting-app',
-  storageBucket: 'sse-reporting-app.firebasestorage.app',
-  messagingSenderId: '287733224796',
-  appId: '1:287733224796:web:e54f3162198158f7861d99'
+  apiKey: 'AIzaSyC2zProdMT3dY3DX3UW3a8N9bMHO0BEAnE',
+  authDomain: 'ssereportingapp-1-54141.firebaseapp.com',
+  projectId: 'ssereportingapp-1-54141',
+  storageBucket: 'ssereportingapp-1-54141.firebasestorage.app',
+  messagingSenderId: '338762287938',
+  appId: '1:338762287938:web:3c9abd7bdc0b1a29b556db'
 });
 const messaging = firebase.messaging();
 messaging.onBackgroundMessage(payload => {
