@@ -1,0 +1,11 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Photos are shared app records: any authenticated app user may read them.
+    // Uploads/deletes remain restricted to the signed-in user's own UID folder.
+    match /ssePhotos/{uid}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}

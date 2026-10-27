@@ -1,0 +1,20 @@
+SSE REPORTING APP V67 — CHECKED PACKAGE
+
+What this build changes
+1. Updates the visible app version to V67.
+2. Moves data:image/* photos found in cloud payloads to Firebase Storage before Firestore writes; Firestore stores the download URL, not the Base64 image.
+3. Team submission writes externalize photos before attempting the Firestore append.
+4. Adds a 900 KiB safety check before writing appData/main, leaving headroom under Firestore's 1 MiB document limit. If non-photo/legacy data is still too large, the app now reports that clearly rather than pretending the save succeeded.
+5. Storage rules allow signed-in app users to view shared record photos while restricting uploads to each user's own UID folder.
+
+Deployment steps
+1. Download and extract this ZIP.
+2. In Firebase Console, open project ssereportingapp-1-54141 and enable Firebase Storage if it is not already enabled.
+3. Publish storage.rules from this package in Firebase Console > Storage > Rules. Confirm your app's Firestore rules still require authenticated users; do not enable public writes.
+4. In the GitHub Pages repository, replace the existing index.html with this package's index.html and commit the change. Upload firebase-messaging-sw.js too if it is part of your current deployment.
+5. Open the deployed page in Chrome, refresh, log out/in, and test a small photo with Attendance and Daily Report. Confirm the photo appears to the manager's account.
+
+Important limits / honest test status
+- The ZIP and inline JavaScript syntax were checked locally. The actual Firebase project, credentials, Storage enablement, and deployed GitHub Pages site cannot be live-tested from this package build.
+- Firestore appData/main is still a single shared document. Photo offloading usually fixes the reported photo-size failure. If the new 900 KiB guard fires, non-photo records/settings are themselves too large and need a separate records migration; do not delete old data to bypass it.
+- Back up/export current Firestore data before deployment. Storage rules affect access to photos; review them against your organization’s privacy requirements before publishing.

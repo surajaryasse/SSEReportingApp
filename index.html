@@ -7,7 +7,7 @@
 <meta name="description" content="SSE Reporting App - Silver Star Enterprises">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/sse-logo-192.png">
-<title>SSE Reporting App — V65 Firebase Save Diagnostic Fix</title>
+<title>SSE Reporting App — V67 Firestore Size Guard + Photo Fix</title>
 <style>
 :root{--navy:#0b1b31;--blue:#1769aa;--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#697386;--line:#e5e9f0;--green:#198754;--red:#dc3545;--amber:#f59f00}
 *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -308,7 +308,7 @@ window.firebaseReady = (async()=>{
 const KEY='sse_reporting_v1';'sse_reporting_v1';
 const state=JSON.parse(localStorage.getItem(KEY)||'null')||{user:null,reports:[],requests:[],attendance:[],members:[{name:'Team Member 1',assignedSites:[]},{name:'Team Member 2',assignedSites:[]}],sites:[],settings:{}};
 state.settings=state.settings||{};
-state.settings.version='V65 FIREBASE SAVE DIAGNOSTIC FIX';
+state.settings.version='V67 FIRESTORE SIZE GUARD + PHOTO FIX';
 state.notifications=Array.isArray(state.notifications)?state.notifications:[];
 state.notificationReceipts=Array.isArray(state.notificationReceipts)?state.notificationReceipts:[];
 state.settings.pushVapidKey=state.settings.pushVapidKey||'';
@@ -428,6 +428,17 @@ async function cloudPayloadForCloud(base){
   const payload=base||cloudPayload();
   await externalizeSsePhotos(payload,'appData');
   payload.user=null;delete payload.authSession;
+  // Leave a safety margin below Firestore's hard 1 MiB document limit.
+  // This catches oversized non-photo/legacy data with a clear message rather
+  // than reporting a confusing generic HTTP 400 after a failed write.
+  let encodedBytes=0;
+  try { encodedBytes=new TextEncoder().encode(JSON.stringify(payload)).length; }
+  catch(e) { throw new Error('Cloud data size could not be checked. Please retry after refreshing the app.'); }
+  const safeLimit=900*1024;
+  if(encodedBytes>safeLimit){
+    const kb=Math.ceil(encodedBytes/1024);
+    throw new Error('Cloud record अभी भी बहुत बड़ा है ('+kb+' KB)। Photos को Storage में move किया गया, लेकिन पुराने/बहुत सारे records अभी appData/main में हैं। डेटा delete न करें; पहले backup लें और records migration की जरूरत है।');
+  }
   return payload;
 }
 
@@ -729,9 +740,9 @@ function shell(content){
       : `<button onclick="page('report')">📝<br>Report</button><button onclick="page('attendance')">🕘<br>Attend</button><button onclick="page('material')">📦<br>Material</button><button onclick="page('workPermit')">📋<br>Permit</button>`}
   </div>`:'';
   document.getElementById('app').innerHTML=`<div class="app">
-  <header class="top"><img src="${state.settings.appLogo||'icons/sse-logo-192.png'}"><div><h1>${uiLabel('appName','SSE Reporting App')}</h1><small>Silver Star Enterprises • <span class="version-pill" title="Current upgraded app version">V65 FIREBASE SAVE DIAGNOSTIC FIX</span></small></div>
+  <header class="top"><img src="${state.settings.appLogo||'icons/sse-logo-192.png'}"><div><h1>${uiLabel('appName','SSE Reporting App')}</h1><small>Silver Star Enterprises • <span class="version-pill" title="Current upgraded app version">V67 FIRESTORE SIZE GUARD + PHOTO FIX</span></small></div>
   <div style="margin-left:auto;display:flex;align-items:center">${u?`<span class="user-chip"><span class="user-dot"></span>${esc(u.name)} · ${role}</span><button class="btn" onclick="logout()">Logout</button>`:''}</div></header>
-  ${content}<div class="card upgrade-note" role="status"><b>🆕 App Updated: V65 FIREBASE SAVE DIAGNOSTIC FIX</b><div>Firebase save verification में nested module path की जाँच सुधारी गई है। Save असफल होने पर टीम रिकॉर्ड के लिए Firestore का वास्तविक HTTP error दिखाने में मदद मिलेगी।</div><small>Update History: V62 — Work Permit Archive, monthly list/PDF workflow; V53 — अलग Assign menu और site-wise Work Report assignment; V52 — Site assignment और Work Report access; V51 — फॉर्म/चेकबॉक्स के ऊपर गलती से खुलने वाला long-press editor बंद; V49 — auto-back fix; V48 — Cloud Queue और notification status tracking. ऐप बंद होने पर Push के लिए Firebase VAPID key और Cloud Function सेटअप आवश्यक है।</small></div><div class="footer">SSE Reporting App • V65 FIREBASE SAVE DIAGNOSTIC FIX • Firebase cloud sync</div>${bottom}<div id="v20Toast" class="v20-toast"></div></div>`;
+  ${content}<div class="card upgrade-note" role="status"><b>🆕 App Updated: V67 FIRESTORE SIZE GUARD + PHOTO FIX</b><div>Photos को Firestore में Base64 रखने के बजाय Firebase Storage में अपलोड किया जाता है। Firestore write से पहले size guard भी जाँचता है; पुराने/बहुत बड़े records होने पर साफ़ error दिखेगा।</div><small>Update History: V62 — Work Permit Archive, monthly list/PDF workflow; V53 — अलग Assign menu और site-wise Work Report assignment; V52 — Site assignment और Work Report access; V51 — फॉर्म/चेकबॉक्स के ऊपर गलती से खुलने वाला long-press editor बंद; V49 — auto-back fix; V48 — Cloud Queue और notification status tracking. ऐप बंद होने पर Push के लिए Firebase VAPID key और Cloud Function सेटअप आवश्यक है।</small></div><div class="footer">SSE Reporting App • V67 FIRESTORE SIZE GUARD + PHOTO FIX • Firebase cloud sync</div>${bottom}<div id="v20Toast" class="v20-toast"></div></div>`;
 }
 function login(){
  shell(`<main class="wrap"><div class="card login"><img class="logo" src="${state.settings.appLogo||'icons/sse-logo-512.png'}"><h2 style="text-align:center">${uiLabel('appName','SSE Reporting App')}</h2><p class="muted" style="text-align:center">Construction Site Daily Reporting • Online Trial</p>
